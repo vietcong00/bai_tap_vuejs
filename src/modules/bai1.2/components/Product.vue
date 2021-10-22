@@ -113,13 +113,13 @@ export default {
     align-items: center;
 }
 
-.rating-watch .rating-star {
-    width: 50%;
+.rating-watch .el-rate {
+    margin: 0;
 }
 
 .rating-watch .el-rate__icon {
     margin-right: auto;
-    font-size: 15px;
+    font-size: 12px;
 }
 
 .rating-watch .el-rate__text {

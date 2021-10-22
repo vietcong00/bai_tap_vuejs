@@ -31,6 +31,6 @@ export default {
 
 <style scoped>
 .caption-card {
-    font-size: 22px;
+    font-size: 19px;
 }
 </style>
