@@ -103,7 +103,7 @@ export default {
     color: #787885;
     font-size: 14px;
     margin-top: 8px;
-    height: 30px;
+    height: 40px;
 }
 
 .rating-watch {

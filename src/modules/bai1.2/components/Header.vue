@@ -69,7 +69,9 @@
                         </div>
                     </el-radio-button>
                     <el-radio-button label="list">
-                        <img src="../../../assets/images/bai1.2/Icon/list.png" />
+                        <div style="position: relative; top: -1.5px">
+                            <img src="../../../assets/images/bai1.2/Icon/list.png" />
+                        </div>
                     </el-radio-button>
                 </el-radio-group>
                 <div style="margin: 20px"></div>

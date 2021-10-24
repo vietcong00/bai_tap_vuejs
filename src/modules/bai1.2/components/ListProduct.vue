@@ -30,7 +30,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .list-product ul {
     list-style-type: none;
     display: flex;

@@ -43,7 +43,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .footer-comp ul {
     list-style-type: none;
     display: flex;
