@@ -1,5 +1,5 @@
 <template>
-    <div class="list-product">
+    <div class="list-product-filter">
         <!-- banner -->
         <div class="banner-img">
             <img src="../../../assets/images/mini-project/banner.png" />
@@ -163,7 +163,20 @@
                         </div>
                     </div>
                 </el-header>
-                <el-main>Main</el-main>
+                <el-main>
+                    <card-product-filter
+                        v-for="(item, index) in listProductFilter"
+                        :key="index"
+                        :imgLink="item.imgLink"
+                        :rate="item.rate"
+                        :reviews="item.reviews"
+                        :producer="item.producer"
+                        :description="item.description"
+                        :oldPrice="item.oldPrice"
+                        :newPrice="item.newPrice"
+                        :statusStock="item.statusStock"
+                    />
+                </el-main>
                 <el-footer>Footer</el-footer>
             </el-container>
         </el-container>
@@ -173,17 +186,15 @@
 <script>
 import ElementDropdownCt from '../elements/ElementDropdown.vue';
 import FilterProductTag from '../elements/FilterProductTag.vue';
+import CardProductFilter from '../components/CardProductFilter.vue';
 export default {
-    name: 'list-product',
+    name: 'list-product-filter',
     components: {
         ElementDropdownCt,
         FilterProductTag,
+        CardProductFilter,
     },
-    props: {
-        listProduct: {
-            type: Array,
-        },
-    },
+
     data() {
         return {
             listItemCategoryFilter: [
@@ -247,6 +258,52 @@ export default {
                 { name: 'CUSTOM PCS', number: 24 },
                 { name: 'HP/COMPAQ PCS', number: 24 },
             ],
+            listProductFilter: [
+                {
+                    imgLink: require('../../../assets/images/mini-project/product1.png'),
+                    rate: 3.5,
+                    reviews: 4,
+                    producer: 'SKU D5515AI',
+                    description:
+                        'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+                    oldPrice: '$499.00',
+                    newPrice: '$499.00',
+                    statusStock: 'in stock',
+                },
+                {
+                    imgLink: require('../../../assets/images/mini-project/product2.png'),
+                    rate: 4.2,
+                    reviews: 5,
+                    producer: 'SKU D5515AI',
+                    description:
+                        'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+                    oldPrice: '$499.00',
+                    newPrice: '$499.00',
+                    statusStock: 'in stock',
+                },
+                {
+                    imgLink: require('../../../assets/images/mini-project/product3.png'),
+                    rate: 2.3,
+                    reviews: 7,
+                    producer: 'SKU D5515AI',
+                    description:
+                        'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+                    oldPrice: '$499.00',
+                    newPrice: '$499.00',
+                    statusStock: 'in stock',
+                },
+                {
+                    imgLink: require('../../../assets/images/mini-project/product4.png'),
+                    rate: 1.2,
+                    reviews: 8,
+                    producer: 'SKU D5515AI',
+                    description:
+                        'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+                    oldPrice: '$499.00',
+                    newPrice: '$499.00',
+                    statusStock: 'out stock',
+                },
+            ],
         };
     },
 
@@ -301,7 +358,7 @@ export default {
     margin: 19px 0 30px 0;
 }
 
-.el-aside {
+.list-product-filter .el-aside {
     background-color: #f5f7ff;
     padding: 0 16px 0 16px;
 }
@@ -368,6 +425,10 @@ export default {
     color: #fff;
     padding: 8px 42px;
     margin-bottom: 10px;
+}
+
+.list-product-filter .el-header {
+    height: auto !important;
 }
 
 .number-product-display {
