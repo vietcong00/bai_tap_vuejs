@@ -20,19 +20,37 @@
             <el-aside width="18%">
                 <div class="filter-column">
                     <b style="margin: 10px auto; font-size: 16px">Filters</b>
-                    <button class="clear-filter-btn">Clear Filter</button>
+                    <button
+                        class="filter-btn clear-filter-btn"
+                        :class="numberFilter > 0 ? 'filter-btn-active' : ''"
+                        @click="handleClearFilter"
+                    >
+                        Clear Filter
+                    </button>
                     <!-- ----------------Filter Options--------------- -->
                     <div class="option-filter-collapse">
                         <el-collapse v-model="activeNames" @change="handleChange">
                             <el-collapse-item title="Category" name="Category">
                                 <!-- list item category filter -->
-                                <div class="list-item-filter list-item-category-filter">
+                                <div
+                                    class="
+                                        list-item-filter
+                                        text-list-item-filter
+                                        list-item-category-filter
+                                    "
+                                >
                                     <ul>
                                         <li
                                             v-for="(
                                                 item, index
                                             ) in listItemCategoryFilter"
                                             :key="index"
+                                            @click="handleChosen('category', item.name)"
+                                            :class="
+                                                item.name == listFilterChosen.category
+                                                    ? 'active'
+                                                    : ''
+                                            "
                                         >
                                             <p>{{ item.name }}</p>
                                             <p>{{ item.number }}</p>
@@ -41,12 +59,24 @@
                                 </div>
                             </el-collapse-item>
                             <el-collapse-item title="Price" name="Price">
-                                <div class="list-item-filter list-item-price-filter">
-                                    <!-- list item category filter -->
+                                <div
+                                    class="
+                                        list-item-filter
+                                        text-list-item-filter
+                                        list-item-price-filter
+                                    "
+                                >
+                                    <!-- list item price filter -->
                                     <ul>
                                         <li
                                             v-for="(item, index) in listItemPriceFilter"
                                             :key="index"
+                                            @click="handleChosen('price', item.name)"
+                                            :class="
+                                                item.name == listFilterChosen.price
+                                                    ? 'active'
+                                                    : ''
+                                            "
                                         >
                                             <p>{{ item.name }}</p>
                                             <p>{{ item.number }}</p>
@@ -61,6 +91,12 @@
                                         <li
                                             v-for="(item, index) in listItemColorFilter"
                                             :key="index"
+                                            @click="handleChosen('color', item)"
+                                            :class="
+                                                item == listFilterChosen.color
+                                                    ? 'active'
+                                                    : ''
+                                            "
                                         >
                                             <div
                                                 class="item-color"
@@ -86,7 +122,13 @@
                     </div>
                     <!-- ------------------------------- -->
                     <!-- Apply Filter Button -->
-                    <button class="apply-filter-btn">Apply Filters (2)</button>
+                    <button
+                        class="filter-btn apply-filter-btn"
+                        :class="numberFilter > 0 ? 'filter-btn-active' : ''"
+                        @click="handleFilter"
+                    >
+                        Apply Filters ({{ numberFilter }})
+                    </button>
                 </div>
             </el-aside>
             <!-- filtered product list paginated and sorted -->
@@ -158,26 +200,46 @@
                             :name="item.name"
                             :number="item.number"
                         />
-                        <div class="clear-filter-tag-btn" v-show="filterTags.length != 0">
+                        <div class="clear-filter-tag-btn" v-show="numberFilter > 0">
                             <b>Clear All</b>
                         </div>
                     </div>
                 </el-header>
                 <el-main>
+                    <!-- list product filter -->
                     <card-product-filter
                         v-for="(item, index) in listProductFilter"
                         :key="index"
                         :imgLink="item.imgLink"
                         :rate="item.rate"
                         :reviews="item.reviews"
-                        :producer="item.producer"
-                        :description="item.description"
+                        :category="item.category"
+                        :color="item.color"
+                        :name="item.name"
                         :oldPrice="item.oldPrice"
                         :newPrice="item.newPrice"
                         :statusStock="item.statusStock"
+                        v-show="
+                            !(
+                                (listFilterChosen.category != '' &&
+                                    item.category != listFilterChosen.category) ||
+                                (listFilterChosen.color != '' &&
+                                    item.color != listFilterChosen.color)
+                            )
+                        "
                     />
                 </el-main>
-                <el-footer>Footer</el-footer>
+                <el-footer>
+                    <!-- pagnition -->
+                    <div class="pagination-product-filter">
+                        <el-pagination
+                            background
+                            layout="prev, pager, next"
+                            :total="1000"
+                        >
+                        </el-pagination>
+                    </div>
+                </el-footer>
             </el-container>
         </el-container>
     </div>
@@ -263,9 +325,9 @@ export default {
                     imgLink: require('../../../assets/images/mini-project/product1.png'),
                     rate: 3.5,
                     reviews: 4,
-                    producer: 'SKU D5515AI',
-                    description:
-                        'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+                    category: 'CUSTOM PCS',
+                    color: 'red',
+                    name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
                     oldPrice: '$499.00',
                     newPrice: '$499.00',
                     statusStock: 'in stock',
@@ -274,20 +336,20 @@ export default {
                     imgLink: require('../../../assets/images/mini-project/product2.png'),
                     rate: 4.2,
                     reviews: 5,
-                    producer: 'SKU D5515AI',
-                    description:
-                        'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+                    category: 'MSI ALL-IN-ONE PCS',
+                    color: 'black',
+                    name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
                     oldPrice: '$499.00',
                     newPrice: '$499.00',
-                    statusStock: 'in stock',
+                    statusStock: 'out stock',
                 },
                 {
                     imgLink: require('../../../assets/images/mini-project/product3.png'),
                     rate: 2.3,
                     reviews: 7,
-                    producer: 'SKU D5515AI',
-                    description:
-                        'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+                    category: 'HP/COMPAQ PCS',
+                    color: 'blue',
+                    name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
                     oldPrice: '$499.00',
                     newPrice: '$499.00',
                     statusStock: 'in stock',
@@ -296,14 +358,21 @@ export default {
                     imgLink: require('../../../assets/images/mini-project/product4.png'),
                     rate: 1.2,
                     reviews: 8,
-                    producer: 'SKU D5515AI',
-                    description:
-                        'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+                    category: 'SKU D5515AI',
+                    color: 'green',
+                    name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
                     oldPrice: '$499.00',
                     newPrice: '$499.00',
                     statusStock: 'out stock',
                 },
             ],
+            numberFilter: 0,
+            listFilterChosen: {
+                name: '',
+                category: '',
+                price: '',
+                color: '',
+            },
         };
     },
 
@@ -335,7 +404,27 @@ export default {
         handleSelect(item) {
             console.log(item);
         },
+        handleChosen(option, value) {
+            if (this.listFilterChosen[option] === '') {
+                this.numberFilter++;
+                this.listFilterChosen[option] = value;
+            } else if (this.listFilterChosen[option] !== value) {
+                this.listFilterChosen[option] = value;
+            } else {
+                this.listFilterChosen[option] = '';
+                this.numberFilter--;
+            }
+        },
+        handleClearFilter() {
+            this.listFilterChosen = {
+                name: '',
+                category: '',
+                price: '',
+                color: '',
+            };
+        },
     },
+
     mounted() {
         this.links = this.loadAll();
     },
@@ -369,11 +458,23 @@ export default {
     flex-direction: column;
 }
 
-.clear-filter-btn {
+.filter-btn {
     width: 100%;
     border-radius: 20px;
-    border: 1px solid rgb(172, 172, 172);
+    border: 1px solid #a2a6b0;
     margin-bottom: 10px;
+    color: #a2a6b0;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 0;
+    background-color: #f5f7ff;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.filter-btn-active {
+    color: #fff;
+    background-color: #0156ff;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 .filter-column .el-collapse-item .el-collapse-item__header {
@@ -393,11 +494,28 @@ export default {
 }
 
 .list-item-filter ul li {
+    cursor: pointer;
+}
+
+.list-item-filter ul li p {
+    margin: 5px 0;
+}
+
+.list-item-filter ul li {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    align-items: center;
     font-size: 13px;
+    padding: 0 10px;
 }
+
+.text-list-item-filter ul .active {
+    border: 2px solid #000000;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
 .list-item-color-filter ul {
     display: flex;
     flex-wrap: wrap;
@@ -406,25 +524,18 @@ export default {
 .list-item-color-filter ul li {
     width: 31px;
     height: 31px;
-    border-radius: 15.5px;
-    border: 2px solid #0156ff;
+    border-radius: 50%;
     margin-right: 3px;
     padding: 2px;
+}
+.list-item-color-filter ul .active {
+    border: 2px solid #0156ff;
 }
 
 .list-item-color-filter ul li .item-color {
     width: 23px;
     height: 23px;
     border-radius: 11.5px;
-}
-
-.apply-filter-btn {
-    width: 100%;
-    border-radius: 20px;
-    background-color: #0156ff;
-    color: #fff;
-    padding: 8px 42px;
-    margin-bottom: 10px;
 }
 
 .list-product-filter .el-header {
@@ -460,7 +571,32 @@ export default {
     margin-top: 5px;
 }
 .clear-filter-tag-btn {
-    border: 1px solid rgb(172, 172, 172);
+    border: 2px solid rgb(228 228 228);
     padding: 10px 17px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+.pagination-product-filter {
+    margin: 33px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination-product-filter button,
+.pagination-product-filter li {
+    border-radius: 18px !important;
+    background-color: #fff !important;
+    color: #a2a6b0 !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    border: 2px solid #a2a6b0 !important;
+    padding: 3px !important;
+    width: 36px !important;
+    height: 36px !important;
+}
+
+.pagination-product-filter .active {
+    background-color: #f5f7ff !important;
+    border: 2px solid #f5f7ff !important;
+    color: #000 !important;
 }
 </style>
