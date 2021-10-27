@@ -249,6 +249,7 @@
 import ElementDropdownCt from '../elements/ElementDropdown.vue';
 import FilterProductTag from '../elements/FilterProductTag.vue';
 import CardProductFilter from '../components/CardProductFilter.vue';
+
 export default {
     name: 'list-product-filter',
     components: {

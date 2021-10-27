@@ -3,7 +3,7 @@
         <div class="content-mini-project">
             <header-comp :listItemNavbar="listItemNavbar" />
             <list-product :listProduct="listProduct" />
-            <!-- <information-product /> -->
+            <information-product />
         </div>
     </div>
 </template>
@@ -11,7 +11,7 @@
 <script>
 import HeaderComp from '../components/Header.vue';
 import ListProduct from '../components/ListProduct.vue';
-// import InformationProduct from '../components/InformationProduct.vue';
+import InformationProduct from '../components/InformationProduct.vue';
 
 export default {
     name: 'App',
@@ -19,7 +19,7 @@ export default {
         // HelloWorld,
         HeaderComp,
         ListProduct,
-        // InformationProduct,
+        InformationProduct,
         // Recommended,
         // FooterComp,
     },
