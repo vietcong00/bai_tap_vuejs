@@ -82,39 +82,34 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .header-comp {
     margin: 0;
     padding: 0 10px;
-}
-
-.navbar-header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.options-header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-}
-
-.icon-option-header {
-    margin: 0 0 0 15px;
-}
-
-.header-comp ul {
-    list-style-type: none;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    margin: 0 0 0 -30px;
-}
-
-.header-comp ul li {
-    margin: 0px 0px 0px 25px;
+    .navbar-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        font-weight: bold;
+        font-size: 14px;
+        ul {
+            list-style-type: none;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin: 0 0 0 -30px;
+            li {
+                margin: 0px 0px 0px 25px;
+            }
+        }
+    }
+    .options-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        .icon-option-header {
+            margin: 0 0 0 15px;
+        }
+    }
 }
 </style>

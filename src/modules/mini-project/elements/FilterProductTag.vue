@@ -38,7 +38,7 @@ export default {
 };
 </script>
 
-<style scope>
+<style lang="scss" scope>
 .filter-product-tag {
     border: 2px solid rgb(228 228 228);
     display: flex;
@@ -47,12 +47,12 @@ export default {
     padding: 10px 17px;
     margin-right: 6px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-}
-.number-product-tag {
-    color: rgb(192, 192, 192);
-    margin-left: 5px;
-}
-.delete-tag {
-    margin-left: 5px;
+    .number-product-tag {
+        color: rgb(192, 192, 192);
+        margin-left: 5px;
+    }
+    .delete-tag {
+        margin-left: 5px;
+    }
 }
 </style>
