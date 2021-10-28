@@ -82,13 +82,16 @@
                 <!-- ----------------Filter Options--------------- -->
                 <div class="summary__option">
                     <el-collapse v-model="activeNames" @change="handleChange">
-                        <el-collapse-item
-                            title="Estimate Shipping and Tax"
-                            name="shipping-tax"
-                        >
-                            <div class="shipping-tax__description">
-                                Enter your destination to get a shipping estimate.
-                            </div>
+                        <el-collapse-item name="shipping-tax">
+                            <template #title>
+                                <div>
+                                    Estimate Shipping and Tax
+                                    <div class="shipping-tax__description">
+                                        Enter your destination to get a shipping estimate.
+                                    </div>
+                                </div>
+                            </template>
+
                             <div class="shipping-country">
                                 <div class="summary__tittle-element">Country</div>
                                 <div class="input-element">
@@ -144,7 +147,10 @@
                                     Enter discount code
                                 </div>
                                 <div class="input-element">
-                                    <el-input v-model="valueDiscountCode" />
+                                    <el-input
+                                        v-model="valueDiscountCode"
+                                        placeholder="Enter Discount code"
+                                    />
                                 </div>
                                 <button class="discount-code__apply">
                                     Apply Discount
@@ -376,30 +382,39 @@ export default {
             .summary__option {
                 margin-bottom: 30px;
                 .el-collapse {
+                    border: none !important;
                     .el-collapse-item {
                         .el-collapse-item__header {
                             font-weight: 400;
                             font-size: 18px;
                             background-color: #f5f7ff;
                             line-height: 27px;
+                            display: flex;
+                            flex-wrap: wrap;
+                            align-items: flex-start;
+                            height: auto;
+                            border: none !important;
+
+                            .shipping-tax__description {
+                                font-weight: 400;
+                                font-size: 14px;
+                                color: #666666;
+                                line-height: 21px;
+                                width: 70%;
+                                margin: 12px 0;
+                            }
+                            i {
+                                margin-top: 4px;
+                            }
                         }
                         .el-collapse-item__wrap {
                             background-color: #f5f7ff;
+                            border: none !important;
                             .el-collapse-item__content {
                                 background-color: #f5f7ff;
                                 .el-radio {
                                     display: flex;
                                     white-space: break-spaces;
-                                    .el-radio__label {
-                                    }
-                                }
-                                .shipping-tax__description {
-                                    font-weight: 400;
-                                    font-size: 14px;
-                                    color: #666666;
-                                    line-height: 21px;
-                                    width: 70%;
-                                    margin: 12px 0;
                                 }
 
                                 .input-element {
@@ -425,6 +440,8 @@ export default {
                 }
             }
             .summary__detail-order {
+                border-top: 1px solid #cacdd8;
+                padding-top: 10px;
                 .list-detail-order div {
                     display: flex;
                     flex-wrap: wrap;
