@@ -220,7 +220,15 @@ export default {
             align-items: center;
             .add-cart-number {
                 .el-input-number {
-                    width: 90px;
+                    width: 70px;
+                    span {
+                        width: 15px;
+                    }
+                    .el-input {
+                        .el-input__inner {
+                            padding-right: 30px;
+                        }
+                    }
                 }
                 margin: 0 21px;
             }

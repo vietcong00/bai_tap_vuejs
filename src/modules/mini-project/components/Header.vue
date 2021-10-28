@@ -85,7 +85,11 @@ export default {
 <style lang="scss" scoped>
 .header-comp {
     margin: 0;
-    padding: 0 10px;
+    padding: 0 10px 20px 10px;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     .navbar-header {
         display: flex;
         flex-wrap: wrap;

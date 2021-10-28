@@ -53,7 +53,7 @@
             </div>
         </div>
         <div class="toggle-group">
-            <div class="show-toggle">
+            <div class="toogle-element show-toggle">
                 <el-radio-group v-model="showToggle" size="small">
                     <el-radio-button label="show-all">Show all</el-radio-button>
                     <el-radio-button label="auction">Auction</el-radio-button>
@@ -61,7 +61,7 @@
                 </el-radio-group>
                 <div style="margin: 20px"></div>
             </div>
-            <div class="type-show-toggle">
+            <div class="toogle-element type-show-toggle">
                 <el-radio-group v-model="typeShowToggle" size="small">
                     <el-radio-button label="grid">
                         <div style="position: relative; top: -3px">
@@ -176,77 +176,77 @@ export default {
 };
 </script>
 
-<style>
-.header-comp {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    height: 40px;
-    margin-bottom: 30px;
-}
-
-.select-group {
-    display: flex;
-    flex-wrap: wrap;
-}
-.select-comp {
-    margin-right: 15px;
-}
-.sort-select {
-    width: 135px;
-    --el-input-placeholder-color: #000;
-    margin: 0px 15px 15px 0px;
-}
-.sort-select .el-input {
-    --el-font-weight-primary: 700;
-    --el-input-placeholder-color: #000;
-}
-.sort-select .el-input__inner {
-    font-weight: bold;
-}
-.text-sort-by {
-    position: relative;
-    top: -48.5px;
-    left: 13px;
-    font-size: 9px;
-    background-color: #fff;
-    width: fit-content;
-    color: rgb(165, 165, 165);
-    padding: 3px;
-}
-.condition-select {
-    width: 112px;
-    margin: 0px 15px 15px 0px;
-}
-.delivery-select {
-    width: 152px;
-    margin: 0px 15px 15px 0px;
-}
-
-.toggle-group {
-    display: flex;
-    flex-wrap: wrap;
-    width: 40%;
-    justify-content: flex-end;
-}
-.el-radio-group .el-radio-button .el-radio-button__inner {
-    height: 32px;
-    background-color: #e7e7e7;
-}
-
-.el-radio-group .is-active {
-    /* --el-font-weight-primary: 700; */
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-}
-
-.el-radio-group .is-active .el-radio-button__inner {
-    border-radius: 4px !important;
-    background-color: #fff !important;
-    color: #2264d1 !important;
-    font-weight: bold;
-}
-
-.type-show-toggle {
-    margin-left: 5%;
+<style lang="scss">
+.content-exercise-two {
+    .header-comp {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        height: 40px;
+        margin-bottom: 30px;
+        .select-group {
+            display: flex;
+            flex-wrap: wrap;
+            .select-comp {
+                margin-right: 15px;
+            }
+            .sort-select {
+                width: 135px;
+                margin: 0px 15px 15px 0px;
+                .el-input {
+                    .el-input__inner {
+                        font-weight: bold;
+                    }
+                }
+                .text-sort-by {
+                    position: relative;
+                    top: -48.5px;
+                    left: 13px;
+                    font-size: 9px;
+                    background-color: #fff;
+                    width: fit-content;
+                    color: rgb(165, 165, 165);
+                    padding: 3px;
+                }
+            }
+            .condition-select {
+                width: 112px;
+                margin: 0px 15px 15px 0px;
+            }
+            .delivery-select {
+                width: 152px;
+                margin: 0px 15px 15px 0px;
+            }
+        }
+        .toggle-group {
+            display: flex;
+            flex-wrap: wrap;
+            width: 40%;
+            justify-content: flex-end;
+            .toogle-element {
+                .el-radio-group {
+                    .el-radio-button {
+                        .el-radio-button__inner {
+                            height: 32px;
+                            background-color: #e7e7e7;
+                        }
+                    }
+                    .is-active {
+                        /* --el-font-weight-primary: 700; */
+                        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+                        .el-radio-button__inner {
+                            border-radius: 4px !important;
+                            background-color: #fff !important;
+                            color: #2264d1 !important;
+                            font-weight: bold;
+                        }
+                    }
+                }
+            }
+            .type-show-toggle {
+                margin-left: 5%;
+            }
+        }
+    }
 }
 </style>

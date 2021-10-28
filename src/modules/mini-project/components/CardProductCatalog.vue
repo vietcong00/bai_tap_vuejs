@@ -1,5 +1,5 @@
 <template>
-    <div class="card-product-filter">
+    <div class="card-product-catalog">
         <el-row :gutter="53">
             <el-col :span="6" style="height: auto">
                 <div class="grid-content image-rate-product-filter">
@@ -83,7 +83,7 @@
 <script>
 import IconComponent from '../elements/IconComponent.vue';
 export default {
-    name: 'card-product-filter',
+    name: 'card-product-catalog',
     components: {
         IconComponent,
     },
@@ -139,7 +139,7 @@ export default {
 </script>
 
 <style lang="scss">
-.card-product-filter {
+.card-product-catalog {
     margin-bottom: 15px;
     padding: 10px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;

@@ -2,24 +2,27 @@
     <div class="bg-mini-project">
         <div class="content-mini-project">
             <header-comp :listItemNavbar="listItemNavbar" />
-            <list-product :listProduct="listProduct" />
+            <catalog :listProduct="listProduct" /> -->
             <information-product />
+            <shopping-cart></shopping-cart>
         </div>
     </div>
 </template>
 
 <script>
 import HeaderComp from '../components/Header.vue';
-import ListProduct from '../components/ListProduct.vue';
+import Catalog from '../components/Catalog.vue';
 import InformationProduct from '../components/InformationProduct.vue';
+import ShoppingCart from '../components/ShoppingCart.vue';
 
 export default {
     name: 'App',
     components: {
         // HelloWorld,
         HeaderComp,
-        ListProduct,
+        Catalog,
         InformationProduct,
+        ShoppingCart,
         // Recommended,
         // FooterComp,
     },

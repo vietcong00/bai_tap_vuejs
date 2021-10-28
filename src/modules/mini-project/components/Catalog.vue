@@ -1,5 +1,5 @@
 <template>
-    <div class="list-product-filter">
+    <div class="catalog">
         <!-- banner -->
         <div class="banner-img">
             <img src="../../../assets/images/mini-project/banner.png" />
@@ -207,7 +207,7 @@
                 </el-header>
                 <el-main>
                     <!-- list product filter -->
-                    <card-product-filter
+                    <card-product-catalog
                         v-for="(item, index) in listProductFilter"
                         :key="index"
                         :imgLink="item.imgLink"
@@ -248,14 +248,14 @@
 <script>
 import ElementDropdownCt from '../elements/ElementDropdown.vue';
 import FilterProductTag from '../elements/FilterProductTag.vue';
-import CardProductFilter from '../components/CardProductFilter.vue';
+import CardProductCatalog from './CardProductCatalog.vue';
 
 export default {
-    name: 'list-product-filter',
+    name: 'catalog',
     components: {
         ElementDropdownCt,
         FilterProductTag,
-        CardProductFilter,
+        CardProductCatalog,
     },
 
     data() {
@@ -437,7 +437,7 @@ export default {
     box-sizing: border-box;
 }
 
-.list-product-filter {
+.catalog {
     .banner-img img {
         width: -webkit-fill-available;
         margin: 27px 0 19px 0;
