@@ -9,15 +9,6 @@
         </div>
         <div class="cart__content">
             <div class="cart__content__product-option-group">
-                <!-- <card-product-cart
-                v-for="(item, index) in listProduct"
-                :key="index"
-                :imgLink="item.imgLink"
-                :name="item.name"
-                :Price="item.price"
-                :subtotal="item.subTotal"
-            >
-            </card-product-cart> -->
                 <div class="product-table">
                     <el-table :data="listProduct">
                         <el-table-column label="Item" width="120">
@@ -35,7 +26,7 @@
                         <el-table-column prop="price" label="Price" width="120">
                             <template #default="scope">
                                 <div class="product__table__money">
-                                    {{ scope.row.price }}
+                                    {{ formatPriceUS(scope.row.price) }}
                                 </div>
                             </template>
                         </el-table-column>
@@ -53,7 +44,7 @@
                         <el-table-column prop="subtotal" label="Subtotal" width="120">
                             <template #default="scope">
                                 <div class="product__table__money">
-                                    {{ scope.row.subtotal }}
+                                    {{ formatPriceUS(scope.row.subtotal) }}
                                 </div>
                             </template>
                         </el-table-column>
@@ -181,7 +172,7 @@
                                     list-detail-order__element__value
                                 "
                             >
-                                {{ item.value }}
+                                {{ formatPriceUS(item.value) }}
                             </div>
                         </div>
                     </div>
@@ -192,99 +183,105 @@
     </div>
 </template>
 
-<script>
-// import CardProductCart from '../components/CardProductCart.vue';
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
 import IconComponent from '../elements/IconComponent.vue';
-export default {
-    name: 'shopping-cart',
+
+@Options({
     components: {
-        // CardProductCart,
         IconComponent,
     },
+})
+export default class CardProductCart extends Vue {
+    listProduct = [
+        {
+            imgLink: require('../../../assets/images/mini-project/product1.png'),
+            name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+            price: 499,
+            quantity: 1,
+            subtotal: 13047,
+        },
+        {
+            imgLink: require('../../../assets/images/mini-project/product2.png'),
+            name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+            price: 499,
+            quantity: 1,
+            subtotal: 13047,
+        },
+        {
+            imgLink: require('../../../assets/images/mini-project/product3.png'),
+            name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+            price: 499,
+            quantity: 1,
+            subtotal: 13047,
+        },
+    ];
 
-    data() {
-        return {
-            listProduct: [
-                {
-                    imgLink: require('../../../assets/images/mini-project/product1.png'),
-                    name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-                    price: '$499.00',
-                    quantity: 1,
-                    subtotal: '$13,047.00',
-                },
-                {
-                    imgLink: require('../../../assets/images/mini-project/product2.png'),
-                    name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-                    price: '$499.00',
-                    quantity: 1,
-                    subtotal: '$13,047.00',
-                },
-                {
-                    imgLink: require('../../../assets/images/mini-project/product3.png'),
-                    name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-                    price: '$499.00',
-                    quantity: 1,
-                    subtotal: '$13,047.00',
-                },
-            ],
-            listDetailOrder: [
-                {
-                    name: 'Subtotal',
-                    description: '',
-                    value: '$13,047.00',
-                },
-                {
-                    name: 'Shipping',
-                    description:
-                        '(Standard Rate - Price may vary depending on the item/destination. TECS Staff will contact you.)',
-                    value: '$21.00',
-                },
-                {
-                    name: 'Tax',
-                    description: '',
-                    value: '$1.91',
-                },
-                {
-                    name: 'GST (10%)',
-                    description: '',
-                    value: '$1.91',
-                },
-                {
-                    name: 'Order Total',
-                    description: '',
-                    value: '$13,068.00',
-                },
-            ],
-            listCountry: [
-                {
-                    value: 'Viet Nam',
-                    label: 'Viet Nam',
-                },
-                {
-                    value: 'USA',
-                    label: 'USA',
-                },
-                {
-                    value: 'Japan',
-                    label: 'Japan',
-                },
-                {
-                    value: 'Korea',
-                    label: 'Korea',
-                },
-                {
-                    value: 'China',
-                    label: 'China',
-                },
-            ],
-            valueCountry: '',
-            valueState: '',
-            valueZip: '',
-            radioShipMethod: '',
-            valueDiscountCode: '',
-        };
-    },
-};
+    listDetailOrder = [
+        {
+            name: 'Subtotal',
+            description: '',
+            value: 13047,
+        },
+        {
+            name: 'Shipping',
+            description:
+                '(Standard Rate - Price may vary depending on the item/destination. TECS Staff will contact you.)',
+            value: 21,
+        },
+        {
+            name: 'Tax',
+            description: '',
+            value: 1.91,
+        },
+        {
+            name: 'GST (10%)',
+            description: '',
+            value: 1.91,
+        },
+        {
+            name: 'Order Total',
+            description: '',
+            value: 13068,
+        },
+    ];
+
+    listCountry = [
+        {
+            value: 'Viet Nam',
+            label: 'Viet Nam',
+        },
+        {
+            value: 'USA',
+            label: 'USA',
+        },
+        {
+            value: 'Japan',
+            label: 'Japan',
+        },
+        {
+            value: 'Korea',
+            label: 'Korea',
+        },
+        {
+            value: 'China',
+            label: 'China',
+        },
+    ];
+
+    valueCountry = '';
+    valueState = '';
+    valueZip = '';
+    radioShipMethod = '';
+    valueDiscountCode = '';
+
+    formatPriceUS(price: number) {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        }).format(price);
+    }
+}
 </script>
 
 <style lang="scss">

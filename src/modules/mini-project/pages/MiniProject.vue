@@ -1,46 +1,42 @@
 <template>
     <div class="bg-mini-project">
+        <div>{{ test }}</div>
         <div class="content-mini-project">
             <header-comp :listItemNavbar="listItemNavbar" />
-            <catalog :listProduct="listProduct" /> -->
-            <information-product />
-            <shopping-cart></shopping-cart>
+
+            <router-view />
         </div>
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import HeaderComp from '../components/Header.vue';
 import Catalog from '../components/Catalog.vue';
+import { Options, Vue } from 'vue-class-component';
 import InformationProduct from '../components/InformationProduct.vue';
 import ShoppingCart from '../components/ShoppingCart.vue';
 
-export default {
-    name: 'App',
+@Options({
+    name: 'mini-project',
     components: {
-        // HelloWorld,
         HeaderComp,
         Catalog,
         InformationProduct,
         ShoppingCart,
-        // Recommended,
-        // FooterComp,
     },
-    data() {
-        return {
-            listItemNavbar: [
-                'Laptops',
-                'Desktop PCs',
-                'Networking Devices',
-                'Printers & Scanners',
-                'PC Parts',
-                'All Other Products',
-                'Repairs',
-                'Our Deals',
-            ],
-        };
-    },
-};
+})
+export default class HomeProject extends Vue {
+    listItemNavbar = [
+        'Laptops',
+        'Desktop PCs',
+        'Networking Devices',
+        'Printers & Scanners',
+        'PC Parts',
+        'All Other Products',
+        'Repairs',
+        'Our Deals',
+    ];
+}
 </script>
 
 <style lang="scss" scoped>

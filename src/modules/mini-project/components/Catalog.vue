@@ -23,7 +23,7 @@
                     <button
                         class="filter-btn clear-filter-btn"
                         :class="numberFilter > 0 ? 'filter-btn-active' : ''"
-                        @click="handleClearFilter"
+                        @click="handleClearFilterName"
                     >
                         Clear Filter
                     </button>
@@ -45,9 +45,10 @@
                                                 item, index
                                             ) in listItemCategoryFilter"
                                             :key="index"
-                                            @click="handleChosen('category', item.name)"
+                                            @click="handleChosenCategory(item.name)"
                                             :class="
-                                                item.name == listFilterChosen.category
+                                                item.name ==
+                                                filterChosenList.category.name
                                                     ? 'active'
                                                     : ''
                                             "
@@ -71,9 +72,9 @@
                                         <li
                                             v-for="(item, index) in listItemPriceFilter"
                                             :key="index"
-                                            @click="handleChosen('price', item.name)"
+                                            @click="handleChosenPrice(item)"
                                             :class="
-                                                item.name == listFilterChosen.price
+                                                item.name == filterChosenList.price.name
                                                     ? 'active'
                                                     : ''
                                             "
@@ -91,9 +92,9 @@
                                         <li
                                             v-for="(item, index) in listItemColorFilter"
                                             :key="index"
-                                            @click="handleChosen('color', item)"
+                                            @click="handleChosenColor(item)"
                                             :class="
-                                                item == listFilterChosen.color
+                                                item == filterChosenList.color.name
                                                     ? 'active'
                                                     : ''
                                             "
@@ -150,57 +151,29 @@
                                 :options="showOptions"
                             />
                             <div class="type-show-icon">
-                                <svg
-                                    height="32px"
-                                    width="32px"
-                                    fill="#000000"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                                    version="1.1"
-                                    x="0px"
-                                    y="0px"
-                                    viewBox="0 0 96 96"
-                                    enable-background="new 0 0 96 96"
-                                    xml:space="preserve"
-                                >
-                                    <rect x="6" y="6" width="20" height="20"></rect>
-                                    <rect x="38" y="6" width="20" height="20"></rect>
-                                    <rect x="70" y="6" width="20" height="20"></rect>
-                                    <rect x="6" y="38" width="20" height="20"></rect>
-                                    <rect x="38" y="38" width="20" height="20"></rect>
-                                    <rect x="70" y="38" width="20" height="20"></rect>
-                                    <rect x="6" y="70" width="20" height="20"></rect>
-                                    <rect x="38" y="70" width="20" height="20"></rect>
-                                    <rect x="70" y="70" width="20" height="20"></rect>
-                                </svg>
+                                <icon-component :iconName="'grid-icon'" />
                             </div>
                             <div class="type-show-icon">
-                                <svg
-                                    width="32"
-                                    height="32"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="h-5 w-5"
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
+                                <icon-component :iconName="'list-icon'" />
                             </div>
                         </div>
                     </div>
                     <!-- tag filter product -->
-                    <div class="filter-product-tags">
+                    <div
+                        class="filter-product-tags"
+                        v-show="filterTagNameList.length > 0"
+                    >
                         <filter-product-tag
-                            v-for="(item, index) in filterTags"
+                            v-for="(item, index) in filterTagNameList"
                             :key="index"
-                            :name="item.name"
-                            :number="item.number"
+                            :filterChosen="item"
+                            @filter-delete-tag="test"
+                            class="filter-tag-btn"
                         />
-                        <div class="clear-filter-tag-btn" v-show="numberFilter > 0">
+                        <div
+                            class="filter-tag-btn clear-filter-tag-btn"
+                            @click="handleClearFilter"
+                        >
                             <b>Clear All</b>
                         </div>
                     </div>
@@ -208,26 +181,10 @@
                 <el-main>
                     <!-- list product filter -->
                     <card-product-catalog
-                        v-for="(item, index) in listProductFilter"
+                        v-for="(item, index) in productList"
                         :key="index"
-                        :imgLink="item.imgLink"
-                        :rate="item.rate"
-                        :reviews="item.reviews"
-                        :category="item.category"
-                        :color="item.color"
-                        :name="item.name"
-                        :oldPrice="item.oldPrice"
-                        :newPrice="item.newPrice"
-                        :statusStock="item.statusStock"
-                        v-show="
-                            !(
-                                (listFilterChosen.category != '' &&
-                                    item.category != listFilterChosen.category) ||
-                                (listFilterChosen.color != '' &&
-                                    item.color != listFilterChosen.color)
-                            )
-                        "
-                    />
+                        :product="item"
+                    ></card-product-catalog>
                 </el-main>
                 <el-footer>
                     <!-- pagnition -->
@@ -245,191 +202,222 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
 import ElementDropdownCt from '../elements/ElementDropdown.vue';
 import FilterProductTag from '../elements/FilterProductTag.vue';
 import CardProductCatalog from './CardProductCatalog.vue';
-
-export default {
+import IconComponent from '../elements/IconComponent.vue';
+import { productStore } from '../store';
+@Options({
     name: 'catalog',
     components: {
         ElementDropdownCt,
         FilterProductTag,
         CardProductCatalog,
+        IconComponent,
     },
+})
+export default class Catalog extends Vue {
+    isFilterBtnActive = false;
+    filterTagNameList: string[] = [];
 
-    data() {
-        return {
-            listItemCategoryFilter: [
-                { name: 'CUSTOM PCS', number: 15 },
-                { name: 'MSI ALL-IN-ONE PCS', number: 45 },
-                { name: 'HP/COMPAQ PCS', number: 1 },
-            ],
-            listItemPriceFilter: [
-                { name: '$0.00 - $1,000.00', number: 19, minPrice: 0, maxPrice: 1000 },
-                {
-                    name: '$1,000.00 - $2,000.00',
-                    number: 21,
-                    minPrice: 1000,
-                    maxPrice: 2000,
-                },
-                {
-                    name: '$2,000.00 - $3,000.00',
-                    number: 9,
-                    minPrice: 2000,
-                    maxPrice: 3000,
-                },
-                {
-                    name: '$3,000.00 - $4,000.00',
-                    number: 6,
-                    minPrice: 3000,
-                    maxPrice: 4000,
-                },
-                {
-                    name: '$4,000.00 - $5,000.00',
-                    number: 3,
-                    minPrice: 4000,
-                    maxPrice: 5000,
-                },
-                {
-                    name: '$5,000.00 - $6,000.00',
-                    number: 1,
-                    minPrice: 5000,
-                    maxPrice: 6000,
-                },
-                {
-                    name: '$6,000.00 - $7,000.00',
-                    number: 1,
-                    minPrice: 6000,
-                    maxPrice: 7000,
-                },
-                {
-                    name: '$7,000.00 And Above',
-                    number: 1,
-                    minPrice: 7000,
-                    maxPrice: 7000,
-                },
-            ],
-            listItemColorFilter: ['green', 'black', 'red', 'blue'],
-            links: [],
-            state1: '',
-            state2: '',
-            sortType: 'Positon',
-            sortOptions: ['Position', 'Price', 'Name', 'Rate'],
-            showOptions: ['5 per page', '10 per page', '20 per page', '35 per page'],
-            filterTags: [
-                { name: 'CUSTOM PCS', number: 24 },
-                { name: 'HP/COMPAQ PCS', number: 24 },
-            ],
-            listProductFilter: [
-                {
-                    imgLink: require('../../../assets/images/mini-project/product1.png'),
-                    rate: 3.5,
-                    reviews: 4,
-                    category: 'CUSTOM PCS',
-                    color: 'red',
-                    name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-                    oldPrice: '$499.00',
-                    newPrice: '$499.00',
-                    statusStock: 'in stock',
-                },
-                {
-                    imgLink: require('../../../assets/images/mini-project/product2.png'),
-                    rate: 4.2,
-                    reviews: 5,
-                    category: 'MSI ALL-IN-ONE PCS',
-                    color: 'black',
-                    name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-                    oldPrice: '$499.00',
-                    newPrice: '$499.00',
-                    statusStock: 'out stock',
-                },
-                {
-                    imgLink: require('../../../assets/images/mini-project/product3.png'),
-                    rate: 2.3,
-                    reviews: 7,
-                    category: 'HP/COMPAQ PCS',
-                    color: 'blue',
-                    name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-                    oldPrice: '$499.00',
-                    newPrice: '$499.00',
-                    statusStock: 'in stock',
-                },
-                {
-                    imgLink: require('../../../assets/images/mini-project/product4.png'),
-                    rate: 1.2,
-                    reviews: 8,
-                    category: 'SKU D5515AI',
-                    color: 'green',
-                    name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-                    oldPrice: '$499.00',
-                    newPrice: '$499.00',
-                    statusStock: 'out stock',
-                },
-            ],
-            numberFilter: 0,
-            listFilterChosen: {
+    get getProductListStore() {
+        return productStore.getProductList;
+    }
+
+    productList = this.getProductListStore;
+
+    listItemCategoryFilter = [
+        { name: 'CUSTOM PCS', number: 15 },
+        { name: 'MSI ALL-IN-ONE PCS', number: 45 },
+        { name: 'HP/COMPAQ PCS', number: 1 },
+    ];
+
+    listItemPriceFilter = [
+        { name: '$0.00 - $1,000.00', number: 19, minPrice: 0, maxPrice: 1000 },
+        {
+            name: '$1,000.00 - $2,000.00',
+            number: 21,
+            minPrice: 1000,
+            maxPrice: 2000,
+        },
+        {
+            name: '$2,000.00 - $3,000.00',
+            number: 9,
+            minPrice: 2000,
+            maxPrice: 3000,
+        },
+        {
+            name: '$3,000.00 - $4,000.00',
+            number: 6,
+            minPrice: 3000,
+            maxPrice: 4000,
+        },
+        {
+            name: '$4,000.00 - $5,000.00',
+            number: 3,
+            minPrice: 4000,
+            maxPrice: 5000,
+        },
+        {
+            name: '$5,000.00 - $6,000.00',
+            number: 1,
+            minPrice: 5000,
+            maxPrice: 6000,
+        },
+        {
+            name: '$6,000.00 - $7,000.00',
+            number: 1,
+            minPrice: 6000,
+            maxPrice: 7000,
+        },
+        {
+            name: '$7,000.00 And Above',
+            number: 1,
+            minPrice: 7000,
+            maxPrice: 10000000,
+        },
+    ];
+
+    listItemColorFilter = ['green', 'black', 'red', 'blue'];
+    links = [];
+    state1 = '';
+    state2 = '';
+    sortType = 'Positon';
+    sortOptions = ['Position', 'Price', 'Name', 'Rate'];
+    showOptions = ['5 per page', '10 per page', '20 per page', '35 per page'];
+
+    numberFilter = 0;
+    filterChosenList = {
+        category: {
+            name: '',
+        },
+        price: {
+            name: '',
+            minPrice: 0,
+            maxPrice: 0,
+        },
+        color: {
+            name: '',
+        },
+    };
+
+    checkTest(item: any) {
+        console.log(item !== '');
+        return item !== '';
+    }
+
+    handleChosenCategory(item: string) {
+        let categoryFilter = this.filterChosenList.category.name;
+        if (!categoryFilter) {
+            this.numberFilter++;
+            categoryFilter = item;
+        } else if (categoryFilter !== item) {
+            categoryFilter = item;
+        } else {
+            categoryFilter = '';
+            this.numberFilter--;
+        }
+        this.filterChosenList.category.name = categoryFilter;
+    }
+
+    handleChosenPrice(item: any) {
+        let price = this.filterChosenList.price;
+
+        if (!price.name) {
+            this.numberFilter++;
+            price = { ...item };
+        } else if (price.name !== item.name) {
+            price = { ...item };
+        } else {
+            price.name = '';
+            price.minPrice = 0;
+            price.maxPrice = 0;
+            this.numberFilter--;
+        }
+        this.filterChosenList.price = price;
+    }
+
+    handleChosenColor(item: string) {
+        let colorFilter = this.filterChosenList.color.name;
+        if (!colorFilter) {
+            this.numberFilter++;
+            colorFilter = item;
+        } else if (colorFilter !== item) {
+            colorFilter = item;
+        } else {
+            colorFilter = '';
+            this.numberFilter--;
+        }
+        this.filterChosenList.color.name = colorFilter;
+    }
+
+    handleFilter() {
+        this.filterTagNameList = [];
+        if (this.filterChosenList.category.name) {
+            this.filterTagNameList.push(this.filterChosenList.category.name);
+        }
+
+        if (this.filterChosenList.price.name) {
+            this.filterTagNameList.push(this.filterChosenList.price.name);
+        }
+
+        if (this.filterChosenList.color.name) {
+            this.filterTagNameList.push(this.filterChosenList.color.name);
+        }
+
+        this.productList = this.getProductListStore.filter((product) => {
+            if (
+                this.filterChosenList.category.name !== '' &&
+                product.category !== this.filterChosenList.category.name
+            ) {
+                return false;
+            }
+            if (
+                this.filterChosenList.color.name !== '' &&
+                product.color !== this.filterChosenList.color.name
+            ) {
+                return false;
+            }
+            if (
+                this.filterChosenList.price.name !== '' &&
+                product.newPrice! >= this.filterChosenList.price.minPrice &&
+                product.newPrice! <= this.filterChosenList.price.maxPrice
+            ) {
+                return false;
+            }
+            return true;
+        });
+    }
+
+    handleClearFilter(): void {
+        this.filterTagNameList = [];
+        this.productList = this.getProductListStore;
+        this.handleClearFilterName();
+    }
+
+    handleClearFilterName(): void {
+        this.filterChosenList = {
+            category: {
                 name: '',
-                category: '',
-                price: '',
-                color: '',
+            },
+            price: {
+                name: '',
+                minPrice: 0,
+                maxPrice: 0,
+            },
+            color: {
+                name: '',
             },
         };
-    },
+        this.numberFilter = 0;
+    }
 
-    methods: {
-        querySearch(queryString, cb) {
-            var links = this.links;
-            var results = queryString
-                ? links.filter(this.createFilter(queryString))
-                : links;
-            // call callback function to return suggestions
-            cb(results);
-        },
-        createFilter(queryString) {
-            return (link) => {
-                return link.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0;
-            };
-        },
-        loadAll() {
-            return [
-                { value: 'vue', link: 'https://github.com/vuejs/vue' },
-                { value: 'element', link: 'https://github.com/ElemeFE/element' },
-                { value: 'cooking', link: 'https://github.com/ElemeFE/cooking' },
-                { value: 'mint-ui', link: 'https://github.com/ElemeFE/mint-ui' },
-                { value: 'vuex', link: 'https://github.com/vuejs/vuex' },
-                { value: 'vue-router', link: 'https://github.com/vuejs/vue-router' },
-                { value: 'babel', link: 'https://github.com/babel/babel' },
-            ];
-        },
-        handleSelect(item) {
-            console.log(item);
-        },
-        handleChosen(option, value) {
-            if (this.listFilterChosen[option] === '') {
-                this.numberFilter++;
-                this.listFilterChosen[option] = value;
-            } else if (this.listFilterChosen[option] !== value) {
-                this.listFilterChosen[option] = value;
-            } else {
-                this.listFilterChosen[option] = '';
-                this.numberFilter--;
-            }
-        },
-        handleClearFilter() {
-            this.listFilterChosen = {
-                name: '',
-                category: '',
-                price: '',
-                color: '',
-            };
-        },
-    },
-
-    mounted() {
-        this.links = this.loadAll();
-    },
-};
+    test(e: any): void {
+        console.log(e);
+    }
+}
 </script>
 
 <style lang="scss">
@@ -567,6 +555,9 @@ export default {
                 display: flex;
                 flex-wrap: wrap;
                 margin-top: 5px;
+                .filter-tag-btn {
+                    cursor: pointer;
+                }
                 .clear-filter-tag-btn {
                     border: 2px solid rgb(228 228 228);
                     padding: 10px 17px;

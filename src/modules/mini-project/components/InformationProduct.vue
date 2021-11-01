@@ -2,7 +2,7 @@
     <div class="information-product">
         <div class="header-information-product">
             <el-row>
-                <el-col :span="12"
+                <el-col :span="14"
                     ><div class="grid-content information-product-tab">
                         <el-tabs v-model="activeName" @tab-click="handleClick">
                             <el-tab-pane
@@ -14,7 +14,7 @@
                         </el-tabs>
                     </div>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="10">
                     <div class="grid-content price-cart-product">
                         <div class="price-information-product">
                             On Sale from <b>$3,299.00</b>
@@ -35,7 +35,7 @@
         </div>
         <div class="content-information-product">
             <el-row>
-                <el-col :span="12">
+                <el-col :span="14">
                     <div class="grid-content description-product-group">
                         <div class="header-description-product-group">
                             <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -55,14 +55,12 @@
                             v-show="tabActive === 'about-product'"
                         >
                             <div class="name-product">
-                                MSI MPG Trident 3 10SC-005AU Intel i7 10700F, 2060 SUPER,
-                                16GB RAM, 512GB SSD, 2TB HDD, Windows 10 Home, Gaming
-                                Keyboard and Mouse 3 Years Warranty Gaming Desktop
+                                {{ productDetail.name }}
                             </div>
                             <div class="list-item-filter list-item-color-filter">
                                 <ul>
                                     <li
-                                        v-for="(item, index) in listColor"
+                                        v-for="(item, index) in productDetail.colors"
                                         :key="index"
                                         @click="handleChosenColor(item)"
                                         :class="item == colorChosen ? 'active' : ''"
@@ -80,7 +78,10 @@
                             v-show="tabActive === 'details'"
                         >
                             <ul class="list-detail-product">
-                                <li v-for="(item, index) in listDetail" :key="index">
+                                <li
+                                    v-for="(item, index) in productDetail.details"
+                                    :key="index"
+                                >
                                     {{ item }}
                                 </li>
                             </ul>
@@ -91,7 +92,7 @@
                         >
                             <div class="parameter-product">
                                 <el-table
-                                    :data="tableData"
+                                    :data="productDetail.parameter"
                                     style="width: 100%"
                                     show-header="false"
                                 >
@@ -106,13 +107,15 @@
                                     <b style="font-weight: 600">Have a Question?</b>
                                     <div class="contact-us">Contact Us</div>
                                 </div>
-                                <div class="category-product">SKU D5515AI</div>
+                                <div class="category-product">
+                                    {{ productDetail.category }}
+                                </div>
                             </div>
                             <div class="more-information">+ More information</div>
                         </div>
                     </div>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="10">
                     <div class="grid-content image__link__information-product">
                         <div class="link__information-product">
                             <icon-component :iconName="'love-icon'" />
@@ -121,7 +124,10 @@
                         </div>
                         <div class="image__information-product">
                             <el-carousel indicator-position="outside" :autoplay="false">
-                                <el-carousel-item v-for="item in listImage" :key="item">
+                                <el-carousel-item
+                                    v-for="item in productDetail.images"
+                                    :key="item"
+                                >
                                     <img :src="item" />
                                     <div class="logo-producer">
                                         <icon-component
@@ -142,82 +148,110 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
 import IconComponent from '../elements/IconComponent.vue';
-export default {
-    name: 'information-product',
+import { useRoute } from 'vue-router';
+import { productStore } from './../store';
+
+@Options({
     components: {
         IconComponent,
     },
-    data() {
-        return {
-            tabActive: 'about-product',
-            num: 0,
-            colorChosen: '',
-            listColor: ['green', 'black', 'red', 'blue'],
-            listDetail: [
-                'Intel Core i7-10700F',
-                'Intel H410',
-                'WHITE',
-                'NVIDIA MSI GeForce RTX 2060 SUPER 8GB AERO ITX GDDR6',
-                'SO-DIMM 16GB (16GB x 1) DDR4 2666MHz',
-                '2 total slots (64GB Max)',
-                '512GB (1 x 512GB) M.2 NVMe PCIe GEN3x4 SSD 2TB (2.5) 5400RPM',
-                'Gaming Keyboard GK30 + Gaming Mouse GM11',
-                '3.5 HDD (0/0), 2.5 HDD/SSD(1/0), M.2 (1/0)',
-                'Intel WGI219Vethernet (10/100/1000M)',
-                'AX200 (WIFI 6)+BT5.1',
-                'PSU 330W',
-                'Fan Cooler',
-            ],
-            listImage: [
-                require('../../../assets/images/mini-project/product0.png'),
-                require('../../../assets/images/mini-project/product1.png'),
-                require('../../../assets/images/mini-project/product2.png'),
-                require('../../../assets/images/mini-project/product3.png'),
-            ],
-            tableData: [
-                {
-                    option: 'CPU',
-                    parameter: 'N/A',
-                },
-                {
-                    option: 'Featured',
-                    parameter: 'N/A',
-                },
-                {
-                    option: 'I/O Ports',
-                    parameter: 'N/A',
-                },
-            ],
-        };
-    },
-    methods: {
-        handleChosenColor(value) {
-            if (this.colorChosen === value) {
-                this.colorChosen = '';
-            } else {
-                this.colorChosen = value;
-            }
-        },
+})
+export default class CardProductCart extends Vue {
+    tabActive = 'about-product';
+    route = useRoute();
+    id = this.route.params.id;
 
-        handleClick(tab, event) {
-            console.log(tab, event);
-            console.log(tab.props);
-            this.tabActive = tab.props.name;
+    productDetail = productStore.getProductList.find((el) => el.id === this.id);
+    num = 0;
+    colorChosen = '';
+    listColor = ['green', 'black', 'red', 'blue'];
+    listDetail = [
+        'Intel Core i7-10700F',
+        'Intel H410',
+        'WHITE',
+        'NVIDIA MSI GeForce RTX 2060 SUPER 8GB AERO ITX GDDR6',
+        'SO-DIMM 16GB (16GB x 1) DDR4 2666MHz',
+        '2 total slots (64GB Max)',
+        '512GB (1 x 512GB) M.2 NVMe PCIe GEN3x4 SSD 2TB (2.5) 5400RPM',
+        'Gaming Keyboard GK30 + Gaming Mouse GM11',
+        '3.5 HDD (0/0), 2.5 HDD/SSD(1/0), M.2 (1/0)',
+        'Intel WGI219Vethernet (10/100/1000M)',
+        'AX200 (WIFI 6)+BT5.1',
+        'PSU 330W',
+        'Fan Cooler',
+    ];
+
+    listImage = [
+        require('../../../assets/images/mini-project/product0.png'),
+        require('../../../assets/images/mini-project/product1.png'),
+        require('../../../assets/images/mini-project/product2.png'),
+        require('../../../assets/images/mini-project/product3.png'),
+    ];
+
+    tableData = [
+        {
+            option: 'CPU',
+            parameter: 'N/A',
         },
-    },
-};
+        {
+            option: 'Featured',
+            parameter: 'N/A',
+        },
+        {
+            option: 'I/O Ports',
+            parameter: 'N/A',
+        },
+    ];
+
+    handleChosenColor(value: string): void {
+        if (this.colorChosen === value) {
+            this.colorChosen = '';
+        } else {
+            this.colorChosen = value;
+        }
+    }
+
+    handleClick(tab: any): void {
+        this.tabActive = tab.props.name;
+    }
+}
 </script>
 
 <style lang="scss">
 .information-product {
     .header-information-product {
+        border-bottom: 1px solid #cacdd8;
+        padding: 20px 0;
+
+        .el-tabs {
+            .el-tabs__item {
+                font-weight: 600;
+                font-size: 14px;
+                line-height: 21px;
+                color: #666666;
+                height: 22px;
+                margin-top: 9px;
+            }
+
+            .el-tabs__nav-wrap::after {
+                width: 0;
+            }
+            .is-active {
+                color: #000;
+            }
+        }
         .price-cart-product {
             display: flex;
             flex-wrap: wrap;
             flex-direction: row;
             align-items: center;
+            .price-information-product {
+                font-size: 14px;
+                line-height: 21px;
+            }
             .add-cart-number {
                 .el-input-number {
                     width: 70px;
@@ -238,27 +272,37 @@ export default {
                 color: #fff;
                 font: size 14px;
                 padding: 10px 30px;
+                font-weight: 600;
+                line-height: 21px;
             }
         }
     }
     .content-information-product {
         .description-product-group {
             background-color: #f5f7ff;
+            padding: 60px 10% 60px 25%;
             .header-description-product-group {
+                padding-bottom: 24px;
                 .seris-name-product {
                     font-size: 32px;
                     font-weight: 500;
+                    line-height: 48px;
+                    padding: 25px 0 13px 0;
                 }
                 .review-product-link {
                     font-size: 12px;
                     font-weight: 400;
+                    line-height: 18px;
                     color: #0156ff;
                 }
             }
             .content-description-product-group {
+                margin-bottom: 31px;
                 .name-product {
                     font-size: 18px;
                     font-weight: 300;
+                    line-height: 30px;
+                    margin-bottom: 46px;
                 }
 
                 .list-item-color-filter {
@@ -267,6 +311,7 @@ export default {
                         flex-wrap: wrap;
                         flex-direction: row;
                         list-style-type: none;
+                        padding: 0;
                         li {
                             width: 31px;
                             height: 31px;
@@ -290,7 +335,8 @@ export default {
                     font-weight: 300;
                 }
                 .parameter-product {
-                    width: auto;
+                    width: fit-content;
+                    border: 1px solid #d3d3d3;
                     .el-table {
                         thead {
                             tr {
@@ -310,9 +356,11 @@ export default {
             .footer-description-product-group {
                 .category-contact-product {
                     font-size: 12px;
-                    font-weight: 300;
+                    font-weight: 600;
+                    line-height: 18px;
                     display: flex;
                     justify-content: space-between;
+                    margin-bottom: 20%;
                     .contact-group {
                         display: flex;
                         .contact-us {
@@ -324,6 +372,8 @@ export default {
                 .more-information {
                     font-weight: 700;
                     font-size: 18px;
+                    line-height: 27px;
+                    margin-left: -20%;
                 }
             }
         }

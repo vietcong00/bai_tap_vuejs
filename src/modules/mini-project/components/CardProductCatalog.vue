@@ -1,141 +1,121 @@
 <template>
     <div class="card-product-catalog">
-        <el-row :gutter="53">
-            <el-col :span="6" style="height: auto">
-                <div class="grid-content image-rate-product-filter">
-                    <img :src="imgLink" style="width: 100%" />
-                    <div class="rate-reviews-product-filter">
-                        <el-rate v-model="value" disabled />
-                        <p style="color: #a2a6b0; margin: -4px 0 0 8px">
-                            Reviews ({{ reviews }})
-                        </p>
-                    </div>
-                </div>
-            </el-col>
-            <el-col :span="14" style="height: auto">
-                <div class="grid-content information-product-filter">
-                    <div class="category-product-filter">
-                        {{ category }}
-                    </div>
-                    <div class="description-product-filter">
-                        <div class="name-product-filter">
-                            {{ name }}
+        <router-link :to="{ name: 'information', params: { id: product.id } }">
+            <el-row :gutter="53">
+                <el-col :span="6" style="height: auto">
+                    <div class="grid-content image-rate-product-filter">
+                        <img :src="product.imgLink" style="width: 100%" />
+                        <div class="rate-reviews-product-filter">
+                            <el-rate v-model="product.rate" disabled />
+                            <p style="color: #a2a6b0; margin: -4px 0 0 8px">
+                                Reviews ({{ product.reviews }})
+                            </p>
                         </div>
-                        <div class="parameter-product-filter">
-                            <el-table
-                                :data="tableData"
-                                style="width: 100%"
-                                show-header="false"
+                    </div>
+                </el-col>
+                <el-col :span="14" style="height: auto">
+                    <div class="grid-content information-product-filter">
+                        <div class="category-product-filter">
+                            {{ product.category }}
+                        </div>
+                        <div class="description-product-filter">
+                            <div class="name-product-filter">
+                                {{ product.name }}
+                            </div>
+                            <div class="parameter-product-filter">
+                                <el-table
+                                    :data="product.parameter"
+                                    style="width: 100%"
+                                    show-header="false"
+                                >
+                                    <el-table-column prop="option" width="120px" />
+                                    <el-table-column prop="value" width="120px" />
+                                </el-table>
+                            </div>
+                        </div>
+                        <div class="price-product-filter">
+                            <del style="font-size: 15px">
+                                {{ formatPriceUS(product.oldPrice) }}
+                            </del>
+                            <b style="padding-left: 7px; font-size: 18px">
+                                {{ formatPriceUS(product.newPrice) }}
+                            </b>
+                        </div>
+                        <router-link :to="{ name: 'shopping-cart' }">
+                            <button class="add-cart-btn" @click="addToCart(product.id)">
+                                <icon-component :iconName="'cart-icon'" />
+                                <b style="padding-left: 5px">Add To Cart</b>
+                            </button>
+                        </router-link>
+                    </div>
+                </el-col>
+                <el-col :span="4" style="height: auto">
+                    <div class="grid-content status-link-product-filter">
+                        <div v-if="product.statusStock == 'in stock'">
+                            <icon-component :iconName="'checked-icon'" />
+                            <p
+                                class="text-status-stock-product-filter"
+                                style="color: #78a962"
                             >
-                                <el-table-column prop="option" width="120px" />
-                                <el-table-column prop="parameter" width="120px" />
-                            </el-table>
+                                in stock
+                            </p>
+                        </div>
+                        <div v-else>
+                            <icon-component :iconName="'cancel-icon'" />
+                            <p
+                                class="text-status-stock-product-filter"
+                                style="color: #c94d3f"
+                            >
+                                out stock
+                            </p>
+                        </div>
+                        <div class="link-product-filter">
+                            <icon-component :iconName="'mail-icon'" />
+                            <icon-component :iconName="'rank-icon'" />
+                            <icon-component :iconName="'love-icon'" />
                         </div>
                     </div>
-                    <!-- <div class="color-product-filter">
-                        <div style="font-size: 15px"><b>Color :</b></div>
-                        <div
-                            style="width: 20px; height: 20px"
-                            :style="{ backgroundColor: color }"
-                        ></div>
-                    </div> -->
-                    <div class="price-product-filter">
-                        <del style="font-size: 15px">{{ oldPrice }}</del>
-                        <b style="padding-left: 7px; font-size: 18px">{{ newPrice }}</b>
-                    </div>
-                    <button class="add-cart-btn">
-                        <icon-component :iconName="'cart-icon'" />
-                        <b style="padding-left: 5px">Add To Cart</b>
-                    </button>
-                </div>
-            </el-col>
-            <el-col :span="4" style="height: auto">
-                <div class="grid-content status-link-product-filter">
-                    <div v-if="statusStock == 'in stock'">
-                        <icon-component :iconName="'checked-icon'" />
-                        <p
-                            class="text-status-stock-product-filter"
-                            style="color: #78a962"
-                        >
-                            in stock
-                        </p>
-                    </div>
-                    <div v-else>
-                        <icon-component :iconName="'cancel-icon'" />
-                        <p
-                            class="text-status-stock-product-filter"
-                            style="color: #c94d3f"
-                        >
-                            out stock
-                        </p>
-                    </div>
-                    <div class="link-product-filter">
-                        <icon-component :iconName="'mail-icon'" />
-                        <icon-component :iconName="'rank-icon'" />
-                        <icon-component :iconName="'love-icon'" />
-                    </div>
-                </div>
-            </el-col>
-        </el-row>
+                </el-col>
+            </el-row>
+        </router-link>
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
 import IconComponent from '../elements/IconComponent.vue';
-export default {
-    name: 'card-product-catalog',
+
+@Options({
     components: {
         IconComponent,
     },
     props: {
-        imgLink: {
-            type: String,
-        },
-        rate: {
-            type: Number,
-        },
-        reviews: {
-            type: Number,
-        },
-        category: {
-            type: String,
-        },
-        color: {
-            type: String,
-        },
-        name: {
-            type: String,
-        },
-        oldPrice: {
-            type: String,
-        },
-        newPrice: {
-            type: String,
-        },
-        statusStock: {
-            type: String,
-        },
+        product: Object,
     },
-    data() {
-        return {
-            value: this.rate,
-            tableData: [
-                {
-                    option: 'CPU',
-                    parameter: 'N/A',
-                },
-                {
-                    option: 'Featured',
-                    parameter: 'N/A',
-                },
-                {
-                    option: 'I/O Ports',
-                    parameter: 'N/A',
-                },
-            ],
-        };
-    },
-};
+})
+export default class CardProductCart extends Vue {
+    tableData = [
+        {
+            option: 'CPU',
+            parameter: 'N/A',
+        },
+        {
+            option: 'Featured',
+            parameter: 'N/A',
+        },
+        {
+            option: 'I/O Ports',
+            parameter: 'N/A',
+        },
+    ];
+
+    formatPriceUS(price: number) {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        }).format(price);
+    }
+}
 </script>
 
 <style lang="scss">
