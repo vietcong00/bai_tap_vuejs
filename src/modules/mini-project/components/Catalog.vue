@@ -45,7 +45,7 @@
                                                 item, index
                                             ) in listItemCategoryFilter"
                                             :key="index"
-                                            @click="handleChosenCategory(item.name)"
+                                            @click="handleChosenCategory(item)"
                                             :class="
                                                 item.name ==
                                                 filterChosenList.category.name
@@ -90,18 +90,18 @@
                                 <div class="list-item-filter list-item-color-filter">
                                     <ul>
                                         <li
-                                            v-for="(item, index) in listItemColorFilter"
+                                            v-for="(item, index) in ListItemColorFilter"
                                             :key="index"
                                             @click="handleChosenColor(item)"
                                             :class="
-                                                item == filterChosenList.color.name
+                                                item.name == filterChosenList.color.name
                                                     ? 'active'
                                                     : ''
                                             "
                                         >
                                             <div
                                                 class="item-color"
-                                                :style="{ backgroundColor: item }"
+                                                :style="{ backgroundColor: item.name }"
                                             ></div>
                                         </li>
                                     </ul>
@@ -167,9 +167,11 @@
                             v-for="(item, index) in filterTagNameList"
                             :key="index"
                             :filterChosen="item"
-                            @filter-delete-tag="test"
+                            @filter-delete-tag="deleteTagFilter(item.name, index)"
                             class="filter-tag-btn"
-                        />
+                        >
+                            {{ item }} - {{ index }}</filter-product-tag
+                        >
                         <div
                             class="filter-tag-btn clear-filter-tag-btn"
                             @click="handleClearFilter"
@@ -220,19 +222,22 @@ import { productStore } from '../store';
 })
 export default class Catalog extends Vue {
     isFilterBtnActive = false;
-    filterTagNameList: string[] = [];
-
+    filterTagNameList: any[] = [];
+    // sortByValue: string = 'Position';
+    // numberPerPage: string = '35 per page';
+    activeNames = ['Category', 'Price', 'Color', 'Filter Name'];
     get getProductListStore() {
         return productStore.getProductList;
     }
 
     productList = this.getProductListStore;
 
-    listItemCategoryFilter = [
-        { name: 'CUSTOM PCS', number: 15 },
-        { name: 'MSI ALL-IN-ONE PCS', number: 45 },
-        { name: 'HP/COMPAQ PCS', number: 1 },
-    ];
+    // listItemCategoryFilter = [
+    //     { name: 'CUSTOM PCS', number: 15 },
+    //     { name: 'MSI ALL-IN-ONE PCS', number: 45 },
+    //     { name: 'HP/COMPAQ PCS', number: 1 },
+    // ];
+    listItemCategoryFilter: any[] = [];
 
     listItemPriceFilter = [
         { name: '$0.00 - $1,000.00', number: 19, minPrice: 0, maxPrice: 1000 },
@@ -276,11 +281,11 @@ export default class Catalog extends Vue {
             name: '$7,000.00 And Above',
             number: 1,
             minPrice: 7000,
-            maxPrice: 10000000,
+            maxPrice: Infinity,
         },
     ];
 
-    listItemColorFilter = ['green', 'black', 'red', 'blue'];
+    ListItemColorFilter: any[] = [];
     links = [];
     state1 = '';
     state2 = '';
@@ -289,17 +294,20 @@ export default class Catalog extends Vue {
     showOptions = ['5 per page', '10 per page', '20 per page', '35 per page'];
 
     numberFilter = 0;
-    filterChosenList = {
+    filterChosenList: { [key: string]: any } = {
         category: {
             name: '',
+            number: 0,
         },
         price: {
             name: '',
             minPrice: 0,
             maxPrice: 0,
+            number: 0,
         },
         color: {
             name: '',
+            number: 0,
         },
     };
 
@@ -308,18 +316,21 @@ export default class Catalog extends Vue {
         return item !== '';
     }
 
-    handleChosenCategory(item: string) {
-        let categoryFilter = this.filterChosenList.category.name;
-        if (!categoryFilter) {
+    handleChosenCategory(item: any) {
+        let categoryFilter = this.filterChosenList.category;
+        if (!categoryFilter.name) {
             this.numberFilter++;
-            categoryFilter = item;
-        } else if (categoryFilter !== item) {
-            categoryFilter = item;
+            categoryFilter = { ...item };
+        } else if (categoryFilter.name !== item.name) {
+            categoryFilter = { ...item };
         } else {
-            categoryFilter = '';
+            categoryFilter = {
+                name: '',
+                number: 0,
+            };
             this.numberFilter--;
         }
-        this.filterChosenList.category.name = categoryFilter;
+        this.filterChosenList.category = categoryFilter;
     }
 
     handleChosenPrice(item: any) {
@@ -339,32 +350,32 @@ export default class Catalog extends Vue {
         this.filterChosenList.price = price;
     }
 
-    handleChosenColor(item: string) {
-        let colorFilter = this.filterChosenList.color.name;
-        if (!colorFilter) {
+    handleChosenColor(item: any) {
+        let colorFilter = this.filterChosenList.color;
+        if (!colorFilter.name) {
             this.numberFilter++;
-            colorFilter = item;
-        } else if (colorFilter !== item) {
-            colorFilter = item;
+            colorFilter = { ...item };
+        } else if (colorFilter.name !== item.name) {
+            colorFilter = { ...item };
         } else {
-            colorFilter = '';
+            colorFilter = {
+                name: '',
+                number: 0,
+            };
             this.numberFilter--;
         }
-        this.filterChosenList.color.name = colorFilter;
+        this.filterChosenList.color = colorFilter;
     }
 
     handleFilter() {
         this.filterTagNameList = [];
-        if (this.filterChosenList.category.name) {
-            this.filterTagNameList.push(this.filterChosenList.category.name);
-        }
-
-        if (this.filterChosenList.price.name) {
-            this.filterTagNameList.push(this.filterChosenList.price.name);
-        }
-
-        if (this.filterChosenList.color.name) {
-            this.filterTagNameList.push(this.filterChosenList.color.name);
+        for (const key in this.filterChosenList) {
+            if (this.filterChosenList[key].name) {
+                this.filterTagNameList.push({
+                    name: this.filterChosenList[key].name,
+                    number: this.filterChosenList[key].number,
+                });
+            }
         }
 
         this.productList = this.getProductListStore.filter((product) => {
@@ -376,14 +387,14 @@ export default class Catalog extends Vue {
             }
             if (
                 this.filterChosenList.color.name !== '' &&
-                product.color !== this.filterChosenList.color.name
+                product.colors.indexOf(this.filterChosenList.color.name) < 0
             ) {
                 return false;
             }
             if (
                 this.filterChosenList.price.name !== '' &&
-                product.newPrice! >= this.filterChosenList.price.minPrice &&
-                product.newPrice! <= this.filterChosenList.price.maxPrice
+                (product.newPrice <= this.filterChosenList.price.minPrice ||
+                    product.newPrice >= this.filterChosenList.price.maxPrice)
             ) {
                 return false;
             }
@@ -414,8 +425,54 @@ export default class Catalog extends Vue {
         this.numberFilter = 0;
     }
 
-    test(e: any): void {
-        console.log(e);
+    deleteTagFilter(tagName: string, index: number): void {
+        this.filterTagNameList.splice(index);
+        for (const key in this.filterChosenList) {
+            if (this.filterChosenList[key].name === tagName) {
+                this.filterChosenList[key].name = '';
+                break;
+            }
+        }
+        this.handleFilter();
+    }
+
+    mounted() {
+        this.productList.forEach((product) => {
+            let found = false;
+            for (const category of this.listItemCategoryFilter) {
+                if (product.category === category.name) {
+                    category.number++;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                this.listItemCategoryFilter.push({
+                    name: product.category,
+                    number: 1,
+                });
+            }
+
+            found = false;
+            product.colors.forEach((color) => {
+                // this.ListItemColorFilter.forEach((el) => {
+                found = false;
+
+                for (const el of this.ListItemColorFilter) {
+                    if (el.name === color) {
+                        el.number++;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    this.ListItemColorFilter.push({
+                        name: color,
+                        number: 1,
+                    });
+                }
+            });
+        });
     }
 }
 </script>

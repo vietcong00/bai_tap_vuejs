@@ -26,7 +26,7 @@
                         <el-table-column prop="price" label="Price" width="120">
                             <template #default="scope">
                                 <div class="product__table__money">
-                                    {{ formatPriceUS(scope.row.price) }}
+                                    {{ formatPriceUS(scope.row.newPrice) }}
                                 </div>
                             </template>
                         </el-table-column>
@@ -48,18 +48,30 @@
                                 </div>
                             </template>
                         </el-table-column>
-                        <el-table-column width="50">
-                            <icon-component :iconName="'delete-icon'" />
-                            <icon-component :iconName="'edit-icon'" />
+                        <el-table-column width="50" prop="id">
+                            <template #default="scope">
+                                <div class="product__table__money">
+                                    <icon-component
+                                        :iconName="'delete-icon'"
+                                        @click="deleteProductCart(scope.row.id)"
+                                    />
+                                    <icon-component :iconName="'edit-icon'" />
+                                </div>
+                            </template>
                         </el-table-column>
                     </el-table>
                 </div>
                 <div class="option-btn-group">
                     <div class="continue-clear-group">
-                        <button class="option-btn-group__continue-btn">
-                            Continue Shopping
-                        </button>
-                        <button class="option-btn-group__clear-btn is-active">
+                        <router-link :to="{ name: 'catalog' }">
+                            <button class="option-btn-group__continue-btn">
+                                Continue Shopping
+                            </button>
+                        </router-link>
+                        <button
+                            class="option-btn-group__clear-btn is-active"
+                            @click="clearShoppingCart"
+                        >
                             Clear Shopping Cart
                         </button>
                     </div>
@@ -186,6 +198,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import IconComponent from '../elements/IconComponent.vue';
+import { productStore } from './../store';
 
 @Options({
     components: {
@@ -193,29 +206,8 @@ import IconComponent from '../elements/IconComponent.vue';
     },
 })
 export default class CardProductCart extends Vue {
-    listProduct = [
-        {
-            imgLink: require('../../../assets/images/mini-project/product1.png'),
-            name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-            price: 499,
-            quantity: 1,
-            subtotal: 13047,
-        },
-        {
-            imgLink: require('../../../assets/images/mini-project/product2.png'),
-            name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-            price: 499,
-            quantity: 1,
-            subtotal: 13047,
-        },
-        {
-            imgLink: require('../../../assets/images/mini-project/product3.png'),
-            name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-            price: 499,
-            quantity: 1,
-            subtotal: 13047,
-        },
-    ];
+    listProduct: any[] = [];
+    CartInfo: any[] = [];
 
     listDetailOrder = [
         {
@@ -280,6 +272,22 @@ export default class CardProductCart extends Vue {
             style: 'currency',
             currency: 'USD',
         }).format(price);
+    }
+
+    clearShoppingCart() {
+        this.listProduct = [];
+        productStore.clearShoppingCart();
+    }
+
+    deleteProductCart(id: string) {
+        this.listProduct.splice(this.listProduct.indexOf(id));
+        productStore.deleteProductCart(id);
+    }
+
+    mounted() {
+        productStore.getCartInfo.forEach((id) => {
+            this.listProduct.push(productStore.getProductList.find((el) => el.id === id));
+        });
     }
 }
 </script>

@@ -1,10 +1,10 @@
 <template>
     <div class="filter-product-tag">
         <div class="name-product-tag">
-            <b>{{ filterChosen }}</b>
+            <b>{{ filterChosen.name }}</b>
         </div>
-        <div class="number-product-tag">(1)</div>
-        <div class="delete-tag" @click="deleteTagFilter(filterChosen)">
+        <div class="number-product-tag">({{ filterChosen.number }})</div>
+        <div class="delete-tag" @click="deleteTagFilter">
             <svg
                 width="20"
                 height="20"
@@ -33,8 +33,8 @@ import { Options, Vue } from 'vue-class-component';
     },
 })
 export default class Catalog extends Vue {
-    deleteTagFilter(tagName: string) {
-        this.$emit('filter-delete-tag', tagName);
+    deleteTagFilter() {
+        this.$emit('filter-delete-tag');
     }
 }
 </script>

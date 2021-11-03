@@ -1,9 +1,9 @@
 <template>
-    <div class="bg-mini-project">
-        <div>{{ test }}</div>
-        <div class="content-mini-project">
+    <div class="mini-project">
+        <div class="mini-project__header">
             <header-comp :listItemNavbar="listItemNavbar" />
-
+        </div>
+        <div class="mini-project__content">
             <router-view />
         </div>
     </div>
@@ -40,19 +40,17 @@ export default class HomeProject extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.bg-mini-project {
-    background-color: #9e9e9e;
-    .content-mini-project {
-        font-family: Avenir, Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        color: #2c3e50;
-        align-content: center;
-        margin: 0;
-        padding: 20px;
-        background-color: #fff;
-        margin: 0 auto;
-    }
+.mini-project__content {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #2c3e50;
+    align-content: center;
+    margin: 0;
+    background-color: #fff;
+    margin: 0 auto;
+    max-width: 1400px;
+    padding: 0 20px;
 }
 
 // .input-name-filter .el-autocomplete {

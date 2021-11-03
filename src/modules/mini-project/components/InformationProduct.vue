@@ -167,45 +167,6 @@ export default class CardProductCart extends Vue {
     productDetail = productStore.getProductList.find((el) => el.id === this.id);
     num = 0;
     colorChosen = '';
-    listColor = ['green', 'black', 'red', 'blue'];
-    listDetail = [
-        'Intel Core i7-10700F',
-        'Intel H410',
-        'WHITE',
-        'NVIDIA MSI GeForce RTX 2060 SUPER 8GB AERO ITX GDDR6',
-        'SO-DIMM 16GB (16GB x 1) DDR4 2666MHz',
-        '2 total slots (64GB Max)',
-        '512GB (1 x 512GB) M.2 NVMe PCIe GEN3x4 SSD 2TB (2.5) 5400RPM',
-        'Gaming Keyboard GK30 + Gaming Mouse GM11',
-        '3.5 HDD (0/0), 2.5 HDD/SSD(1/0), M.2 (1/0)',
-        'Intel WGI219Vethernet (10/100/1000M)',
-        'AX200 (WIFI 6)+BT5.1',
-        'PSU 330W',
-        'Fan Cooler',
-    ];
-
-    listImage = [
-        require('../../../assets/images/mini-project/product0.png'),
-        require('../../../assets/images/mini-project/product1.png'),
-        require('../../../assets/images/mini-project/product2.png'),
-        require('../../../assets/images/mini-project/product3.png'),
-    ];
-
-    tableData = [
-        {
-            option: 'CPU',
-            parameter: 'N/A',
-        },
-        {
-            option: 'Featured',
-            parameter: 'N/A',
-        },
-        {
-            option: 'I/O Ports',
-            parameter: 'N/A',
-        },
-    ];
-
     handleChosenColor(value: string): void {
         if (this.colorChosen === value) {
             this.colorChosen = '';
