@@ -11,10 +11,10 @@
 
 <script lang="ts">
 import HeaderComp from '../components/Header.vue';
-import Catalog from '../components/Catalog.vue';
+import Catalog from './Catalog.vue';
 import { Options, Vue } from 'vue-class-component';
-import InformationProduct from '../components/InformationProduct.vue';
-import ShoppingCart from '../components/ShoppingCart.vue';
+import InformationProduct from './InformationProduct.vue';
+import ShoppingCart from './ShoppingCart.vue';
 
 @Options({
     name: 'mini-project',
@@ -40,6 +40,9 @@ export default class HomeProject extends Vue {
 </script>
 
 <style lang="scss" scoped>
+* {
+    box-sizing: border-box;
+}
 .mini-project__content {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -52,8 +55,4 @@ export default class HomeProject extends Vue {
     max-width: 1400px;
     padding: 0 20px;
 }
-
-// .input-name-filter .el-autocomplete {
-//     width: -webkit-fill-available;
-// }
 </style>

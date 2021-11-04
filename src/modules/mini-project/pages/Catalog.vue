@@ -18,6 +18,11 @@
         <el-container>
             <!-- filter Column -->
             <el-aside width="18%">
+                <!-- <filter-aside
+                    @handleFilter="handleFilter"
+                    @handleTagFilter="handleTagFilter"
+                /> -->
+
                 <div class="filter-column">
                     <b style="margin: 10px auto; font-size: 16px">Filters</b>
                     <button
@@ -32,92 +37,28 @@
                         <el-collapse v-model="activeNames" @change="handleChange">
                             <el-collapse-item title="Category" name="Category">
                                 <!-- list item category filter -->
-                                <div
-                                    class="
-                                        list-item-filter
-                                        text-list-item-filter
-                                        list-item-category-filter
-                                    "
-                                >
-                                    <ul>
-                                        <li
-                                            v-for="(
-                                                item, index
-                                            ) in listItemCategoryFilter"
-                                            :key="index"
-                                            @click="handleChosenCategory(item)"
-                                            :class="
-                                                item.name ==
-                                                filterChosenList.category.name
-                                                    ? 'active'
-                                                    : ''
-                                            "
-                                        >
-                                            <p>{{ item.name }}</p>
-                                            <p>{{ item.number }}</p>
-                                        </li>
-                                    </ul>
-                                </div>
+                                <comp-select-text
+                                    :listText="listItemCategoryFilter"
+                                    @selectText="handleChosenCategory"
+                                    :textSelectedProp="filterChosenList.category.name"
+                                />
                             </el-collapse-item>
                             <el-collapse-item title="Price" name="Price">
-                                <div
-                                    class="
-                                        list-item-filter
-                                        text-list-item-filter
-                                        list-item-price-filter
-                                    "
-                                >
-                                    <!-- list item price filter -->
-                                    <ul>
-                                        <li
-                                            v-for="(item, index) in listItemPriceFilter"
-                                            :key="index"
-                                            @click="handleChosenPrice(item)"
-                                            :class="
-                                                item.name == filterChosenList.price.name
-                                                    ? 'active'
-                                                    : ''
-                                            "
-                                        >
-                                            <p>{{ item.name }}</p>
-                                            <p>{{ item.number }}</p>
-                                        </li>
-                                    </ul>
-                                </div>
+                                <comp-select-text
+                                    :listText="listItemPriceFilter"
+                                    @selectText="handleChosenPrice"
+                                    :textSelectedProp="filterChosenList.price.name"
+                                />
                             </el-collapse-item>
                             <el-collapse-item title="Color" name="Color">
                                 <!-- list item color filter -->
-                                <div class="list-item-filter list-item-color-filter">
-                                    <ul>
-                                        <li
-                                            v-for="(item, index) in ListItemColorFilter"
-                                            :key="index"
-                                            @click="handleChosenColor(item)"
-                                            :class="
-                                                item.name == filterChosenList.color.name
-                                                    ? 'active'
-                                                    : ''
-                                            "
-                                        >
-                                            <div
-                                                class="item-color"
-                                                :style="{ backgroundColor: item.name }"
-                                            ></div>
-                                        </li>
-                                    </ul>
-                                </div>
+                                <comp-select-color
+                                    :listColor="setColorFilter"
+                                    @selectColor="handleChosenColor"
+                                    :colorSelectedProp="filterChosenList.color.name"
+                                />
                             </el-collapse-item>
                             <el-collapse-item title="Filter Name" name="Filter Name">
-                                <!-- input name filter -->
-                                <div class="input-name-filter">
-                                    <el-autocomplete
-                                        class="inline-input"
-                                        v-model="state1"
-                                        :fetch-suggestions="querySearch"
-                                        placeholder="Please Input"
-                                        @select="handleSelect"
-                                    ></el-autocomplete>
-                                </div>
                             </el-collapse-item>
                         </el-collapse>
                     </div>
@@ -135,6 +76,7 @@
             <!-- filtered product list paginated and sorted -->
             <el-container>
                 <el-header>
+                    <!-- <filter-container-header :filterTagNameList="getFilterTagNameList" /> -->
                     <!-- options show product -->
                     <div class="header-optiops-filter">
                         <!-- The product order number is displayed -->
@@ -181,11 +123,12 @@
                     </div>
                 </el-header>
                 <el-main>
-                    <!-- list product filter -->
+                    <!-- list product catalog -->
                     <card-product-catalog
                         v-for="(item, index) in productList"
                         :key="index"
                         :product="item"
+                        v-show="checkSearchProduct(item.name)"
                     ></card-product-catalog>
                 </el-main>
                 <el-footer>
@@ -206,11 +149,16 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import ElementDropdownCt from '../elements/ElementDropdown.vue';
-import FilterProductTag from '../elements/FilterProductTag.vue';
-import CardProductCatalog from './CardProductCatalog.vue';
-import IconComponent from '../elements/IconComponent.vue';
 import { productStore } from '../store';
+import ElementDropdownCt from '../components/element-custom/CompDropdown.vue';
+import FilterProductTag from '../components/catalog/FilterTag.vue';
+import CardProductCatalog from '../components/ProductCardCatalog.vue';
+import IconComponent from '../components/CompIcon.vue';
+import CompSelectColor from '../components/CompSelectColor.vue';
+import CompSelectText from '../components/CompSelectText.vue';
+
+import { ITextItem } from '../types';
+
 @Options({
     name: 'catalog',
     components: {
@@ -218,11 +166,13 @@ import { productStore } from '../store';
         FilterProductTag,
         CardProductCatalog,
         IconComponent,
+        CompSelectColor,
+        CompSelectText,
     },
 })
 export default class Catalog extends Vue {
     isFilterBtnActive = false;
-    filterTagNameList: any[] = [];
+    filterTagNameList: Array<ITextItem> = [];
     // sortByValue: string = 'Position';
     // numberPerPage: string = '35 per page';
     activeNames = ['Category', 'Price', 'Color', 'Filter Name'];
@@ -230,65 +180,71 @@ export default class Catalog extends Vue {
         return productStore.getProductList;
     }
 
+    get getInputSearch() {
+        return productStore.getInputSearch;
+    }
+
+    get getFilterTagNameList() {
+        return this.filterTagNameList;
+    }
+
     productList = this.getProductListStore;
 
-    // listItemCategoryFilter = [
-    //     { name: 'CUSTOM PCS', number: 15 },
-    //     { name: 'MSI ALL-IN-ONE PCS', number: 45 },
-    //     { name: 'HP/COMPAQ PCS', number: 1 },
-    // ];
     listItemCategoryFilter: any[] = [];
 
     listItemPriceFilter = [
-        { name: '$0.00 - $1,000.00', number: 19, minPrice: 0, maxPrice: 1000 },
+        {
+            name: '$0.00 - $1,000.00',
+            number: 0,
+            minPrice: 0,
+            maxPrice: 1000,
+        },
         {
             name: '$1,000.00 - $2,000.00',
-            number: 21,
+            number: 0,
             minPrice: 1000,
             maxPrice: 2000,
         },
         {
             name: '$2,000.00 - $3,000.00',
-            number: 9,
+            number: 0,
             minPrice: 2000,
             maxPrice: 3000,
         },
         {
             name: '$3,000.00 - $4,000.00',
-            number: 6,
+            number: 0,
             minPrice: 3000,
             maxPrice: 4000,
         },
         {
             name: '$4,000.00 - $5,000.00',
-            number: 3,
+            number: 0,
             minPrice: 4000,
             maxPrice: 5000,
         },
         {
             name: '$5,000.00 - $6,000.00',
-            number: 1,
+            number: 0,
             minPrice: 5000,
             maxPrice: 6000,
         },
         {
             name: '$6,000.00 - $7,000.00',
-            number: 1,
+            number: 0,
             minPrice: 6000,
             maxPrice: 7000,
         },
         {
             name: '$7,000.00 And Above',
-            number: 1,
+            number: 0,
             minPrice: 7000,
             maxPrice: Infinity,
         },
     ];
 
     ListItemColorFilter: any[] = [];
-    links = [];
-    state1 = '';
-    state2 = '';
+    setColorFilter = new Set();
     sortType = 'Positon';
     sortOptions = ['Position', 'Price', 'Name', 'Rate'];
     showOptions = ['5 per page', '10 per page', '20 per page', '35 per page'];
@@ -311,12 +267,7 @@ export default class Catalog extends Vue {
         },
     };
 
-    checkTest(item: any) {
-        console.log(item !== '');
-        return item !== '';
-    }
-
-    handleChosenCategory(item: any) {
+    handleChosenCategory(item: ITextItem) {
         let categoryFilter = this.filterChosenList.category;
         if (!categoryFilter.name) {
             this.numberFilter++;
@@ -333,7 +284,7 @@ export default class Catalog extends Vue {
         this.filterChosenList.category = categoryFilter;
     }
 
-    handleChosenPrice(item: any) {
+    handleChosenPrice(item: ITextItem) {
         let price = this.filterChosenList.price;
 
         if (!price.name) {
@@ -350,8 +301,17 @@ export default class Catalog extends Vue {
         this.filterChosenList.price = price;
     }
 
-    handleChosenColor(item: any) {
+    handleChosenColor(color: string) {
         let colorFilter = this.filterChosenList.color;
+        let item;
+        for (const itemColor of this.ListItemColorFilter) {
+            if (itemColor.name === color) {
+                item = { ...itemColor };
+                break;
+            }
+        }
+        console.log(color, item);
+
         if (!colorFilter.name) {
             this.numberFilter++;
             colorFilter = { ...item };
@@ -426,6 +386,7 @@ export default class Catalog extends Vue {
     }
 
     deleteTagFilter(tagName: string, index: number): void {
+        this.numberFilter--;
         this.filterTagNameList.splice(index);
         for (const key in this.filterChosenList) {
             if (this.filterChosenList[key].name === tagName) {
@@ -434,6 +395,24 @@ export default class Catalog extends Vue {
             }
         }
         this.handleFilter();
+    }
+
+    // handleFilter(data: Array<IProduct>) {
+    //     this.productList = data;
+    // }
+
+    handleTagFilter(data: Array<ITextItem>) {
+        this.filterTagNameList = data;
+    }
+
+    checkSearchProduct(name: string) {
+        if (
+            this.getInputSearch !== '' &&
+            name.toLowerCase().indexOf(this.getInputSearch.toLowerCase()) < 0
+        ) {
+            return false;
+        }
+        return true;
     }
 
     mounted() {
@@ -455,9 +434,8 @@ export default class Catalog extends Vue {
 
             found = false;
             product.colors.forEach((color) => {
-                // this.ListItemColorFilter.forEach((el) => {
                 found = false;
-
+                this.setColorFilter.add(color);
                 for (const el of this.ListItemColorFilter) {
                     if (el.name === color) {
                         el.number++;
@@ -472,20 +450,23 @@ export default class Catalog extends Vue {
                     });
                 }
             });
+
+            for (const price of this.listItemPriceFilter) {
+                if (product.newPrice <= price.maxPrice) {
+                    price.number++;
+                    break;
+                }
+            }
         });
     }
 }
 </script>
 
 <style lang="scss">
-* {
-    box-sizing: border-box;
-}
-
 .catalog {
     .banner-img img {
         width: -webkit-fill-available;
-        margin: 27px 0 19px 0;
+        margin: 0 0 19px 0;
     }
     .name-seris-product {
         box-sizing: content-box;
@@ -519,130 +500,73 @@ export default class Catalog extends Vue {
                 box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
             }
             .option-filter-collapse {
-                .el-collapse-item {
-                    .el-collapse-item__header {
-                        background-color: #f5f7ff;
-                        font-weight: bold;
-                    }
-                    .el-collapse-item__content {
-                        background-color: #f5f7ff;
-                        .list-item-filter {
-                            ul {
-                                list-style-type: none;
-                                display: flex;
-                                flex-wrap: wrap;
-                                flex-direction: column;
-                                padding: 0;
-                                li {
-                                    cursor: pointer;
-                                    display: flex;
-                                    flex-wrap: wrap;
-                                    justify-content: space-between;
-                                    align-items: center;
-                                    font-size: 13px;
-                                    padding: 0 10px;
-                                    p {
-                                        margin: 5px 0;
-                                    }
-                                }
-                            }
-                        }
-
-                        .text-list-item-filter {
-                            ul {
-                                .active {
-                                    border: 2px solid #000000;
-                                    border-radius: 10px;
-                                    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-                                }
-                            }
-                        }
-                        .list-item-color-filter {
-                            ul {
-                                display: flex;
-                                flex-wrap: wrap;
-                                flex-direction: row;
-                                li {
-                                    width: 31px;
-                                    height: 31px;
-                                    border-radius: 50%;
-                                    margin-right: 3px;
-                                    padding: 2px;
-                                    .item-color {
-                                        width: 23px;
-                                        height: 23px;
-                                        border-radius: 11.5px;
-                                    }
-                                }
-                                .active {
-                                    border: 2px solid #0156ff;
-                                }
-                            }
-                        }
-                    }
+                .el-collapse-item__header {
+                    background-color: #f5f7ff;
+                    font-weight: bold;
+                }
+                .el-collapse-item__content {
+                    background-color: #f5f7ff;
                 }
             }
         }
     }
-    .el-container {
-        .el-header {
-            height: auto !important;
-            .header-optiops-filter {
+    .el-header {
+        height: auto !important;
+        .header-optiops-filter {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            .number-product-display {
+                color: #b3b3b3;
+            }
+            .sort-show-options {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: space-between;
                 align-items: center;
-                .number-product-display {
-                    color: #b3b3b3;
+                .component-dropdown {
+                    margin-right: 11px;
                 }
-                .sort-show-options {
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: space-between;
-                    align-items: center;
-                    .element-dropdown-custome {
-                        margin-right: 11px;
-                    }
-                    .type-show-icon {
-                        margin-left: 9px;
-                    }
-                }
-            }
-            .filter-product-tags {
-                display: flex;
-                flex-wrap: wrap;
-                margin-top: 5px;
-                .filter-tag-btn {
-                    cursor: pointer;
-                }
-                .clear-filter-tag-btn {
-                    border: 2px solid rgb(228 228 228);
-                    padding: 10px 17px;
-                    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+                .type-show-icon {
+                    margin-left: 9px;
                 }
             }
         }
-        .el-footer {
-            .pagination-product-filter {
-                margin: 33px;
-                display: flex;
-                justify-content: center;
-                li {
-                    border-radius: 18px !important;
-                    background-color: #fff !important;
-                    color: #a2a6b0 !important;
-                    font-weight: 600 !important;
-                    font-size: 13px !important;
-                    border: 2px solid #a2a6b0 !important;
-                    padding: 3px !important;
-                    width: 36px !important;
-                    height: 36px !important;
-                }
-                .active {
-                    background-color: #f5f7ff !important;
-                    border: 2px solid #f5f7ff !important;
-                    color: #000 !important;
-                }
+        .filter-product-tags {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 5px;
+            .filter-tag-btn {
+                cursor: pointer;
+            }
+            .clear-filter-tag-btn {
+                border: 2px solid rgb(228 228 228);
+                padding: 10px 17px;
+                box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+            }
+        }
+    }
+    .el-footer {
+        .pagination-product-filter {
+            margin: 33px;
+            display: flex;
+            justify-content: center;
+            li {
+                border-radius: 18px !important;
+                background-color: #fff !important;
+                color: #a2a6b0 !important;
+                font-weight: 600 !important;
+                font-size: 13px !important;
+                border: 2px solid #a2a6b0 !important;
+                padding: 3px !important;
+                width: 36px !important;
+                height: 36px !important;
+            }
+            .active {
+                background-color: #f5f7ff !important;
+                border: 2px solid #f5f7ff !important;
+                color: #000 !important;
             }
         }
     }

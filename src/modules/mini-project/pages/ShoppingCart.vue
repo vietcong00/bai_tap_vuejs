@@ -32,13 +32,7 @@
                         </el-table-column>
                         <el-table-column label="Qty" width="100">
                             <template #default="scope">
-                                <el-input-number
-                                    v-model="scope.row.quantity"
-                                    :min="1"
-                                    :max="10"
-                                    controls-position="right"
-                                    @change="handleChange"
-                                />
+                                <comp-input-number :quantity="scope.row.quantity" />
                             </template>
                         </el-table-column>
                         <el-table-column prop="subtotal" label="Subtotal" width="120">
@@ -197,12 +191,14 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import IconComponent from '../elements/IconComponent.vue';
-import { productStore } from './../store';
+import { productStore } from '../store';
+import IconComponent from '../components/CompIcon.vue';
+import CompInputNumber from '../components/element-custom/CompInputNumber.vue';
 
 @Options({
     components: {
         IconComponent,
+        CompInputNumber,
     },
 })
 export default class CardProductCart extends Vue {
@@ -276,12 +272,12 @@ export default class CardProductCart extends Vue {
 
     clearShoppingCart() {
         this.listProduct = [];
-        productStore.clearShoppingCart();
+        productStore.clearCart();
     }
 
     deleteProductCart(id: string) {
         this.listProduct.splice(this.listProduct.indexOf(id));
-        productStore.deleteProductCart(id);
+        productStore.deleteCart(id);
     }
 
     mounted() {
@@ -312,24 +308,13 @@ export default class CardProductCart extends Vue {
             .product-table {
                 .el-table {
                     tr:nth-child(2n) {
-                        background-color: #f5f7ff;
+                        background-color: #fefef2;
                     }
 
                     tr:nth-child(2n + 1) {
                         background-color: #fff;
                     }
                     .el-table__row {
-                        .el-input-number {
-                            width: 70px;
-                            span {
-                                width: 15px;
-                            }
-                            .el-input {
-                                .el-input__inner {
-                                    padding-right: 30px;
-                                }
-                            }
-                        }
                         .product__table__name {
                             font-weight: 400;
                             font-size: 14px;

@@ -1,19 +1,38 @@
 import { getModule, VuexModule, Mutation, Action, Module } from 'vuex-module-decorators';
 import store from '@/store';
+import { IProduct, ICartItem, IFilterChosen } from './types';
+
 // import { exampleService } from './services/api.service';
 
 @Module({ dynamic: true, namespaced: true, store, name: 'productStore' })
 class ProductStore extends VuexModule {
     count = 0;
+    inputSearchHeader = '';
+    filterChosenList: IFilterChosen = {
+        category: {
+            name: '',
+            number: 0,
+        },
+        price: {
+            name: '',
+            minPrice: 0,
+            maxPrice: 0,
+            number: 0,
+        },
+        color: {
+            name: '',
+            number: 0,
+        },
+    };
 
-    productList = [
+    productList: Array<IProduct> = [
         {
             id: '0',
             imgLink: require('./../../assets/images/mini-project/product1.png'),
             rate: 3.5,
             reviews: 4,
             category: 'CUSTOM PCS',
-            name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+            name: 'Test1 MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
             oldPrice: 499,
             newPrice: 499,
             statusStock: 'in stock',
@@ -53,7 +72,7 @@ class ProductStore extends VuexModule {
                 require('./../../assets/images/mini-project/product2.png'),
                 require('./../../assets/images/mini-project/product3.png'),
             ],
-            quantity: 1,
+            quantity: 2,
             subtotal: 123,
         },
         {
@@ -62,7 +81,7 @@ class ProductStore extends VuexModule {
             rate: 4.2,
             reviews: 5,
             category: 'MSI ALL-IN-ONE PCS',
-            name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+            name: 'Test2 MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
             oldPrice: 499,
             newPrice: 499,
             statusStock: 'out stock',
@@ -111,7 +130,7 @@ class ProductStore extends VuexModule {
             rate: 2.3,
             reviews: 7,
             category: 'HP/COMPAQ PCS',
-            name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+            name: 'Test3 MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
             oldPrice: 499,
             newPrice: 9999999,
             statusStock: 'in stock',
@@ -160,7 +179,7 @@ class ProductStore extends VuexModule {
             rate: 1.2,
             reviews: 8,
             category: 'SKULL D5515AI',
-            name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+            name: 'Test4 MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
             oldPrice: 499,
             newPrice: 10000,
             statusStock: 'out stock',
@@ -206,10 +225,10 @@ class ProductStore extends VuexModule {
         {
             id: '4',
             imgLink: require('./../../assets/images/mini-project/product1.png'),
-            rate: 25,
+            rate: 2.5,
             reviews: 63,
             category: 'SKULL D5515AI',
-            name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+            name: 'Test5 MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
             oldPrice: 499,
             newPrice: 632,
             statusStock: 'in stock',
@@ -258,7 +277,7 @@ class ProductStore extends VuexModule {
             rate: 3.2,
             reviews: 89,
             category: 'SKU D5515AI',
-            name: 'MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
+            name: 'Test6 MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
             oldPrice: 499,
             newPrice: 125,
             statusStock: 'out stock',
@@ -313,6 +332,14 @@ class ProductStore extends VuexModule {
         return this.cartInfo;
     }
 
+    get getInputSearch() {
+        return this.inputSearchHeader;
+    }
+
+    get getFilterChosenList() {
+        return this.filterChosenList;
+    }
+
     @Mutation
     INCREMENT() {
         this.count++;
@@ -324,18 +351,34 @@ class ProductStore extends VuexModule {
     }
 
     @Mutation
-    addToCart(productInfo: any) {
-        this.cartInfo.add(productInfo);
+    ADD_TO_CART(cartItem: ICartItem) {
+        this.cartInfo.add(cartItem.id);
+        for (const product of this.productList) {
+            if (product.id === cartItem.id) {
+                product.quantity = cartItem.quantity || 1;
+                break;
+            }
+        }
     }
 
     @Mutation
-    deleteCart(id: string) {
+    DELETE_CART(id: string) {
         this.cartInfo.delete(id);
     }
 
     @Mutation
-    clearCart() {
+    CLEAR_CART() {
         this.cartInfo.clear();
+    }
+
+    @Mutation
+    CHANGE_INPUT_SEARCH(input: string) {
+        this.inputSearchHeader = input;
+    }
+
+    @Mutation
+    UPDATE_FILTER_CHOSEN_LIST(data: IFilterChosen) {
+        this.filterChosenList = data;
     }
 
     @Action
@@ -358,18 +401,28 @@ class ProductStore extends VuexModule {
     }
 
     @Action
-    addProductToCart(payload: string) {
-        this.addToCart(payload);
+    addToCart(cartItem: ICartItem) {
+        this.ADD_TO_CART(cartItem);
     }
 
     @Action
-    clearShoppingCart() {
-        this.clearCart();
+    clearCart() {
+        this.CLEAR_CART();
     }
 
     @Action
-    deleteProductCart(id: string) {
-        this.deleteCart(id);
+    deleteCart(id: string) {
+        this.DELETE_CART(id);
+    }
+
+    @Action
+    changeInputSearch(input: string) {
+        this.CHANGE_INPUT_SEARCH(input);
+    }
+
+    @Action
+    updateFilterChosenList(data: IFilterChosen) {
+        this.UPDATE_FILTER_CHOSEN_LIST(data);
     }
 }
 

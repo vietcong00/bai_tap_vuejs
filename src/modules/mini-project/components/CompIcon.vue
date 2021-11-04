@@ -1,7 +1,7 @@
 <template>
     <div class="icon-component">
         <!-- mail icon -->
-        <div v-if="IconChosen === 'mail-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'mail-icon'">
             <svg
                 width="30"
                 height="30"
@@ -25,7 +25,7 @@
             </svg>
         </div>
         <!-- rank-icon -->
-        <div v-if="IconChosen === 'rank-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'rank-icon'">
             <svg
                 width="30"
                 height="30"
@@ -55,7 +55,7 @@
             </svg>
         </div>
         <!-- love-icon -->
-        <div v-if="IconChosen === 'love-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'love-icon'">
             <svg
                 width="30"
                 height="30"
@@ -72,7 +72,7 @@
             </svg>
         </div>
         <!-- checked icon -->
-        <div v-if="IconChosen === 'checked-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'checked-icon'">
             <svg
                 width="10"
                 height="10"
@@ -90,7 +90,7 @@
             </svg>
         </div>
         <!-- cancel - close icon -->
-        <div v-if="IconChosen === 'cancel-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'cancel-icon'">
             <svg
                 width="10"
                 height="10"
@@ -108,7 +108,7 @@
             </svg>
         </div>
         <!--  icon -->
-        <div v-if="IconChosen === 'cart-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'cart-icon'">
             <svg
                 width="19"
                 height="18"
@@ -123,7 +123,7 @@
             </svg>
         </div>
         <!--  logo-producer-icon -->
-        <div v-if="IconChosen === 'logo-producer-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'logo-producer-icon'">
             <svg
                 width="77"
                 height="27"
@@ -169,7 +169,7 @@
             </svg>
         </div>
         <!--  deleta icon -->
-        <div v-if="IconChosen === 'delete-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'delete-icon'">
             <svg
                 width="27"
                 height="27"
@@ -200,7 +200,7 @@
             </svg>
         </div>
         <!-- edit icon -->
-        <div v-if="IconChosen === 'edit-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'edit-icon'">
             <svg
                 width="27"
                 height="27"
@@ -224,7 +224,7 @@
         </div>
 
         <!--  search icon -->
-        <div v-if="IconChosen === 'search-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'search-icon'">
             <svg
                 width="17"
                 height="16"
@@ -241,7 +241,7 @@
             </svg>
         </div>
         <!--  icon -->
-        <div v-if="IconChosen === 'cart-header-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'cart-header-icon'">
             <svg
                 width="19"
                 height="17"
@@ -256,7 +256,7 @@
             </svg>
         </div>
         <!--  grid-icon -->
-        <div v-if="IconChosen === 'grid-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'grid-icon'">
             <svg
                 height="32px"
                 width="32px"
@@ -282,7 +282,7 @@
             </svg>
         </div>
         <!--  list icon -->
-        <div v-if="IconChosen === 'list-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'list-icon'">
             <svg
                 width="32"
                 height="32"
@@ -299,7 +299,7 @@
             </svg>
         </div>
         <!-- facebook icon -->
-        <div v-if="IconChosen === 'facebook-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'facebook-icon'">
             <svg
                 width="16"
                 height="16"
@@ -314,7 +314,7 @@
             </svg>
         </div>
         <!-- Instagram icon -->
-        <div v-if="IconChosen === 'instagram-icon'">
+        <div class="icon-customer" v-if="IconChosen === 'instagram-icon'">
             <svg
                 width="16"
                 height="16"
@@ -329,7 +329,7 @@
             </svg>
         </div>
         <!--  icon -->
-        <div v-if="IconChosen === '-icon'"></div>
+        <div class="icon-customer" v-if="IconChosen === '-icon'"></div>
     </div>
 </template>
 
@@ -349,4 +349,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scpoed>
+.icon-customer {
+    :hover {
+        cursor: pointer;
+    }
+}
+</style>

@@ -26,10 +26,13 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { PropType } from 'vue';
+import { ITextItem } from '../../types';
+
 @Options({
-    name: 'filter-product-tag',
+    name: 'filter-tag',
     props: {
-        filterChosen: String,
+        filterChosen: Object as PropType<ITextItem>,
     },
 })
 export default class Catalog extends Vue {

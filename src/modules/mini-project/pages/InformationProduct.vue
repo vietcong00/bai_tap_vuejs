@@ -17,18 +17,14 @@
                 <el-col :span="10">
                     <div class="grid-content price-cart-product">
                         <div class="price-information-product">
-                            On Sale from <b>$3,299.00</b>
+                            On Sale from
+                            <b>{{ formatCurrency(productDetail.newPrice) }}</b>
                         </div>
-                        <div class="add-cart-number">
-                            <el-input-number
-                                v-model="num"
-                                :min="1"
-                                :max="10"
-                                controls-position="right"
-                                @change="handleChange"
-                            />
-                        </div>
-                        <button class="add-cart-btn">Add to Cart</button>
+                        <comp-input-number :quantity="quantity" />
+
+                        <button class="add-cart-btn" @click="addToCart">
+                            Add to Cart
+                        </button>
                     </div>
                 </el-col>
             </el-row>
@@ -57,21 +53,10 @@
                             <div class="name-product">
                                 {{ productDetail.name }}
                             </div>
-                            <div class="list-item-filter list-item-color-filter">
-                                <ul>
-                                    <li
-                                        v-for="(item, index) in productDetail.colors"
-                                        :key="index"
-                                        @click="handleChosenColor(item)"
-                                        :class="item == colorChosen ? 'active' : ''"
-                                    >
-                                        <div
-                                            class="item-color"
-                                            :style="{ backgroundColor: item }"
-                                        ></div>
-                                    </li>
-                                </ul>
-                            </div>
+                            <select-color
+                                class="list-item-filter"
+                                :listColor="productDetail.colors"
+                            />
                         </div>
                         <div
                             class="content-description-product-group"
@@ -90,16 +75,9 @@
                             class="content-description-product-group"
                             v-show="tabActive === 'specs'"
                         >
-                            <div class="parameter-product">
-                                <el-table
-                                    :data="productDetail.parameter"
-                                    style="width: 100%"
-                                    show-header="false"
-                                >
-                                    <el-table-column prop="option" width="120px" />
-                                    <el-table-column prop="parameter" width="240px" />
-                                </el-table>
-                            </div>
+                            <product-parameter-table
+                                :parameter="productDetail.parameter"
+                            />
                         </div>
                         <div class="footer-description-product-group">
                             <div class="category-contact-product">
@@ -122,25 +100,7 @@
                             <icon-component :iconName="'rank-icon'" />
                             <icon-component :iconName="'mail-icon'" />
                         </div>
-                        <div class="image__information-product">
-                            <el-carousel indicator-position="outside" :autoplay="false">
-                                <el-carousel-item
-                                    v-for="item in productDetail.images"
-                                    :key="item"
-                                >
-                                    <img :src="item" />
-                                    <div class="logo-producer">
-                                        <icon-component
-                                            :iconName="'logo-producer-icon'"
-                                        />
-                                        <div class="learn-more">
-                                            own it now, up to 6 months interest free
-                                            <u>learn more</u>
-                                        </div>
-                                    </div>
-                                </el-carousel-item>
-                            </el-carousel>
-                        </div>
+                        <product-image-carousel :images="productDetail.images" />
                     </div>
                 </el-col>
             </el-row>
@@ -150,13 +110,26 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import IconComponent from '../elements/IconComponent.vue';
 import { useRoute } from 'vue-router';
-import { productStore } from './../store';
+import { productStore } from '../store';
+import { formatCurrency } from '../util';
+import { ICartItem } from '../types';
+import IconComponent from '../components/CompIcon.vue';
+import SelectColor from '../components/CompSelectColor.vue';
+import ProductParameterTable from '../components/ProductParameterTable.vue';
+import CompInputNumber from '../components/element-custom/CompInputNumber.vue';
+import ProductImageCarousel from '../components/ProductImageCarousel.vue';
 
 @Options({
     components: {
         IconComponent,
+        SelectColor,
+        ProductParameterTable,
+        CompInputNumber,
+        ProductImageCarousel,
+    },
+    methods: {
+        formatCurrency,
     },
 })
 export default class CardProductCart extends Vue {
@@ -166,7 +139,9 @@ export default class CardProductCart extends Vue {
 
     productDetail = productStore.getProductList.find((el) => el.id === this.id);
     num = 0;
+    quantity = this.productDetail?.quantity;
     colorChosen = '';
+
     handleChosenColor(value: string): void {
         if (this.colorChosen === value) {
             this.colorChosen = '';
@@ -177,6 +152,14 @@ export default class CardProductCart extends Vue {
 
     handleClick(tab: any): void {
         this.tabActive = tab.props.name;
+    }
+
+    addToCart(): void {
+        const cartItem: ICartItem = {
+            id: this.productDetail?.id ?? '',
+            quantity: this.quantity ?? 1,
+        };
+        productStore.addToCart(cartItem);
     }
 }
 </script>
@@ -213,19 +196,8 @@ export default class CardProductCart extends Vue {
                 font-size: 14px;
                 line-height: 21px;
             }
-            .add-cart-number {
-                .el-input-number {
-                    width: 70px;
-                    span {
-                        width: 15px;
-                    }
-                    .el-input {
-                        .el-input__inner {
-                            padding-right: 30px;
-                        }
-                    }
-                }
-                margin: 0 21px;
+            .comp-input-number {
+                margin: 0 30px;
             }
             .add-cart-btn {
                 border-radius: 30px;
@@ -266,52 +238,9 @@ export default class CardProductCart extends Vue {
                     margin-bottom: 46px;
                 }
 
-                .list-item-color-filter {
-                    ul {
-                        display: flex;
-                        flex-wrap: wrap;
-                        flex-direction: row;
-                        list-style-type: none;
-                        padding: 0;
-                        li {
-                            width: 31px;
-                            height: 31px;
-                            border-radius: 50%;
-                            margin-right: 3px;
-                            padding: 2px;
-                            .item-color {
-                                width: 23px;
-                                height: 23px;
-                                border-radius: 11.5px;
-                            }
-                        }
-                        .active {
-                            border: 2px solid #0156ff;
-                        }
-                    }
-                }
-
                 .list-detail-product {
                     font-size: 14px;
                     font-weight: 300;
-                }
-                .parameter-product {
-                    width: fit-content;
-                    border: 1px solid #d3d3d3;
-                    .el-table {
-                        thead {
-                            tr {
-                                display: none;
-                            }
-                        }
-                        tr:nth-child(2n) {
-                            background-color: #f5f7ff;
-                        }
-
-                        tr:nth-child(2n + 1) {
-                            background-color: #fff;
-                        }
-                    }
                 }
             }
             .footer-description-product-group {
@@ -345,62 +274,6 @@ export default class CardProductCart extends Vue {
                 margin: 20px 0 0 25px;
                 .icon-component {
                     margin-bottom: 7px;
-                }
-            }
-            .image__information-product {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                width: 100%;
-                .logo-producer {
-                    display: flex;
-                    flex-direction: row;
-                    font-size: 12px;
-                    font-weight: 300;
-                    align-items: center;
-                    .learn-more {
-                        border-left: 2px solid #00aeb8;
-                        padding-left: 10px;
-                        margin-left: 10px;
-                        height: -webkit-fill-available;
-                        width: 170px;
-                    }
-                }
-                .el-carousel {
-                    .el-carousel__container {
-                        height: 500px;
-                        width: 500px;
-                    }
-                    .el-carousel__item {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        justify-content: center;
-                        img {
-                            width: auto;
-                            height: auto;
-                        }
-                        h3 {
-                            margin: 0;
-                            text-align: center;
-                            height: 100%;
-                        }
-                    }
-                    .el-carousel__indicators {
-                        li {
-                            button {
-                                width: 10px;
-                                height: 10px;
-                                border-radius: 50%;
-                                background-color: #cacdd8;
-                            }
-                        }
-                        .is-active {
-                            button {
-                                background-color: #0156ff;
-                            }
-                        }
-                    }
                 }
             }
         }

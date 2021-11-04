@@ -101,18 +101,43 @@
                 <div class="options-header">
                     <!-- search option -->
                     <div class="icon-option-header search-option-header">
-                        <icon-component :iconName="'search-icon'" />
+                        <el-input
+                            v-model="inputSearch"
+                            placeholder="Type something"
+                            v-show="searchBtnActice"
+                            @keydown.enter="searchProduct"
+                        >
+                            <template #prefix>
+                                <icon-component
+                                    :iconName="'search-icon'"
+                                    @click="searchBtnActice = !searchBtnActice"
+                                />
+                            </template>
+                        </el-input>
+                        <icon-component
+                            class="icon-hover"
+                            :iconName="'search-icon'"
+                            v-show="!searchBtnActice"
+                            @click="searchBtnActice = !searchBtnActice"
+                        />
                     </div>
                     <!-- cart option -->
-                    <router-link :to="{ name: 'shopping-cart' }">
-                        <div class="icon-option-header cart-option-header">
-                            <el-badge :value="getNumberCart" class="item" type="primary">
-                                <icon-component :iconName="'cart-header-icon'" />
-                            </el-badge>
-                        </div>
-                    </router-link>
+                    <div class="icon-option-header">
+                        <router-link :to="{ name: 'shopping-cart' }">
+                            <div class="icon-hover cart-option-header">
+                                <el-badge
+                                    :value="getNumberCart"
+                                    class="item"
+                                    type="primary"
+                                >
+                                    <icon-component :iconName="'cart-header-icon'" />
+                                </el-badge>
+                            </div>
+                        </router-link>
+                    </div>
+
                     <!-- account -->
-                    <div class="icon-option-header account-option-header">
+                    <div class="icon-option-header icon-hover account-option-header">
                         <img src="../../../assets/images/mini-project/avatar.png" />
                     </div>
                 </div>
@@ -123,7 +148,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import IconComponent from '../elements/IconComponent.vue';
+import IconComponent from './CompIcon.vue';
 import { productStore } from './../store';
 
 @Options({
@@ -140,6 +165,8 @@ export default class Header extends Vue {
     tabActive = 'Laptops';
     dayOpen = 'Mon-Thu: ';
     timeOpen = '9:00 AM - 5:30 PM';
+    searchBtnActice = false;
+    inputSearch = '';
     dayOfWeek = [
         'Monday',
         'Tuesday',
@@ -151,8 +178,11 @@ export default class Header extends Vue {
     ];
 
     get getNumberCart() {
-        console.log(productStore.getCartInfo.size);
         return productStore.getCartInfo.size;
+    }
+
+    searchProduct() {
+        productStore.changeInputSearch(this.inputSearch);
     }
 
     changeTimeActice(day: string) {
@@ -183,7 +213,7 @@ export default class Header extends Vue {
 
 <style lang="scss" scoped>
 .header-comp {
-    margin: 0;
+    margin: 0 0 20px 0;
     padding: 0 10px 20px 10px;
     border-bottom: 1px solid #e5e5e5;
     display: flex;
@@ -233,7 +263,7 @@ export default class Header extends Vue {
             display: flex;
             flex-wrap: wrap;
             flex-direction: row;
-            max-width: 1400px !important;
+            max-width: 1350px !important;
             margin: 0 auto;
             justify-content: space-between;
             .narbar-header {
@@ -248,10 +278,9 @@ export default class Header extends Vue {
                     display: flex;
                     flex-wrap: wrap;
                     align-items: center;
-                    margin: 0 0 0 -30px;
+                    margin: 0px;
                     li {
-                        margin: 0px 0px 0px 25px;
-                        cursor: pointer;
+                        margin: 0px 0px 0px 20px;
                     }
                     .active {
                         color: #0156ff;
@@ -263,10 +292,22 @@ export default class Header extends Vue {
             }
             .options-header {
                 display: flex;
-                flex-wrap: wrap;
                 align-items: center;
                 .icon-option-header {
-                    margin: 0 0 0 30px;
+                    margin-left: 15px;
+                }
+                .icon-hover {
+                    padding: 5px;
+                    &:hover {
+                        cursor: pointer;
+                        background-color: rgb(214, 214, 214);
+                        border-radius: 50%;
+                    }
+                }
+                .search-option-header {
+                    display: flex;
+                    flex-wrap: wrap;
+                    flex-direction: row;
                 }
             }
         }

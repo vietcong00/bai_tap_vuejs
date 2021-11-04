@@ -1,5 +1,5 @@
 <template>
-    <div class="element-dropdown-custome">
+    <div class="component-dropdown">
         <div>
             <b style="color: #8c8c8c">{{ nameElement }}</b>
         </div>
@@ -37,7 +37,7 @@ export default {
 </script>
 
 <style scoped>
-.element-dropdown-custome {
+.component-dropdown {
     display: flex;
     flex-wrap: wrap;
     border: 2px solid #d0d0d0;
