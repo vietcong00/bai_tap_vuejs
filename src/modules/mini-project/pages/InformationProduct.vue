@@ -121,6 +121,7 @@ import CompInputNumber from '../components/element-custom/CompInputNumber.vue';
 import ProductImageCarousel from '../components/ProductImageCarousel.vue';
 
 @Options({
+    name: 'information-product',
     components: {
         IconComponent,
         SelectColor,
@@ -167,17 +168,16 @@ export default class CardProductCart extends Vue {
 <style lang="scss">
 .information-product {
     .header-information-product {
-        border-bottom: 1px solid #cacdd8;
         padding: 20px 0;
-
+        border-bottom: 1px solid #cacdd8;
         .el-tabs {
             .el-tabs__item {
-                font-weight: 600;
-                font-size: 14px;
-                line-height: 21px;
-                color: #666666;
                 height: 22px;
                 margin-top: 9px;
+                color: #666666;
+                font-size: 14px;
+                font-weight: 600;
+                line-height: 21px;
             }
 
             .el-tabs__nav-wrap::after {
@@ -200,42 +200,42 @@ export default class CardProductCart extends Vue {
                 margin: 0 30px;
             }
             .add-cart-btn {
-                border-radius: 30px;
-                background-color: #0156ff;
+                padding: 10px 30px;
                 color: #fff;
                 font: size 14px;
-                padding: 10px 30px;
                 font-weight: 600;
                 line-height: 21px;
+                background-color: #0156ff;
+                border-radius: 30px;
             }
         }
     }
     .content-information-product {
         .description-product-group {
-            background-color: #f5f7ff;
             padding: 60px 10% 60px 25%;
+            background-color: #f5f7ff;
             .header-description-product-group {
                 padding-bottom: 24px;
                 .seris-name-product {
+                    padding: 25px 0 13px 0;
                     font-size: 32px;
                     font-weight: 500;
                     line-height: 48px;
-                    padding: 25px 0 13px 0;
                 }
                 .review-product-link {
+                    color: #0156ff;
                     font-size: 12px;
                     font-weight: 400;
                     line-height: 18px;
-                    color: #0156ff;
                 }
             }
             .content-description-product-group {
                 margin-bottom: 31px;
                 .name-product {
+                    margin-bottom: 46px;
                     font-size: 18px;
                     font-weight: 300;
                     line-height: 30px;
-                    margin-bottom: 46px;
                 }
 
                 .list-detail-product {
@@ -245,25 +245,25 @@ export default class CardProductCart extends Vue {
             }
             .footer-description-product-group {
                 .category-contact-product {
-                    font-size: 12px;
-                    font-weight: 600;
-                    line-height: 18px;
                     display: flex;
                     justify-content: space-between;
                     margin-bottom: 20%;
+                    font-size: 12px;
+                    font-weight: 600;
+                    line-height: 18px;
                     .contact-group {
                         display: flex;
                         .contact-us {
-                            color: #0156ff;
                             padding-left: 10px;
+                            color: #0156ff;
                         }
                     }
                 }
                 .more-information {
+                    margin-left: -20%;
                     font-weight: 700;
                     font-size: 18px;
                     line-height: 27px;
-                    margin-left: -20%;
                 }
             }
         }

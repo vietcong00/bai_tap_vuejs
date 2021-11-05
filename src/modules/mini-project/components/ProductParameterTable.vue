@@ -12,6 +12,7 @@
 import { Options, Vue } from 'vue-class-component';
 
 @Options({
+    name: 'product-parameter-table',
     props: {
         parameter: Array,
     },

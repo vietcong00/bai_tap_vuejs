@@ -21,6 +21,7 @@ import { Options, Vue } from 'vue-class-component';
 import IconComponent from '../components/CompIcon.vue';
 
 @Options({
+    name: 'product-image-carousel',
     components: {
         IconComponent,
     },
@@ -39,15 +40,15 @@ export default class ProductImageCarousel extends Vue {}
     .logo-producer {
         display: flex;
         flex-direction: row;
+        align-items: center;
         font-size: 12px;
         font-weight: 300;
-        align-items: center;
         .learn-more {
-            border-left: 2px solid #00aeb8;
-            padding-left: 10px;
-            margin-left: 10px;
             height: -webkit-fill-available;
             width: 170px;
+            margin-left: 10px;
+            padding-left: 10px;
+            border-left: 2px solid #00aeb8;
         }
     }
     .el-carousel {
@@ -61,22 +62,22 @@ export default class ProductImageCarousel extends Vue {}
             align-items: center;
             justify-content: center;
             img {
-                width: auto;
                 height: auto;
+                width: auto;
             }
             h3 {
-                margin: 0;
                 text-align: center;
                 height: 100%;
+                margin: 0;
             }
         }
         .el-carousel__indicators {
             li {
                 button {
-                    width: 10px;
                     height: 10px;
-                    border-radius: 50%;
+                    width: 10px;
                     background-color: #cacdd8;
+                    border-radius: 50%;
                 }
             }
             .is-active {

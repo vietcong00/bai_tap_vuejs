@@ -86,8 +86,9 @@
                             fill="#0156FF"
                         />
                     </svg>
-                    <ul>
+                    <ul class="navbar-list">
                         <li
+                            class="navbar-element"
                             v-for="(caption, index) in listItemNavbar"
                             :key="index"
                             @click="tabActive = caption"
@@ -152,6 +153,7 @@ import IconComponent from './CompIcon.vue';
 import { productStore } from './../store';
 
 @Options({
+    name: 'header',
     props: {
         listItemNavbar: {
             type: Array,
@@ -213,27 +215,28 @@ export default class Header extends Vue {
 
 <style lang="scss" scoped>
 .header-comp {
-    margin: 0 0 20px 0;
-    padding: 0 10px 20px 10px;
-    border-bottom: 1px solid #e5e5e5;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    margin: 0 0 20px 0;
+    padding: 0 10px 20px 10px;
+    border-bottom: 1px solid #e5e5e5;
     .general_information {
-        background-color: #000;
         width: 100%;
+        background-color: #000;
         .general_information__content {
-            max-width: 1400px !important;
-            margin: 0 auto;
-            font-size: 12px;
-            font-weight: 600;
-            line-height: 18px;
-            color: #fff;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             width: 100%;
+            max-width: 1400px !important;
             padding: 8px;
+            margin: 0 auto;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 18px;
+
             .general_information__element {
                 display: flex;
                 flex-wrap: wrap;
@@ -241,15 +244,15 @@ export default class Header extends Vue {
                 color: rgb(255, 255, 255);
             }
             .day-open {
-                color: rgb(170, 170, 170);
                 margin-right: 5px;
+                color: rgb(170, 170, 170);
             }
             .time-open {
                 margin-right: 10px;
             }
             .address-contact-group__address {
-                color: rgb(170, 170, 170);
                 margin-right: 5px;
+                color: rgb(170, 170, 170);
             }
             .communications-element {
                 margin-left: 12.5px;
@@ -257,36 +260,35 @@ export default class Header extends Vue {
         }
     }
     .navbar-option {
-        width: 100%;
         padding-top: 20px;
+        width: 100%;
         .navbar-option__content {
             display: flex;
-            flex-wrap: wrap;
             flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
             max-width: 1350px !important;
             margin: 0 auto;
-            justify-content: space-between;
             .narbar-header {
                 display: flex;
                 flex-wrap: wrap;
                 align-items: center;
-                font-weight: bold;
                 font-size: 14px;
-
-                ul {
-                    list-style-type: none;
+                font-weight: bold;
+                .navbar-list {
                     display: flex;
                     flex-wrap: wrap;
                     align-items: center;
                     margin: 0px;
-                    li {
+                    list-style-type: none;
+                    .navbar-element {
                         margin: 0px 0px 0px 20px;
                     }
                     .active {
-                        color: #0156ff;
+                        padding: 8px 26px;
                         border: 2px solid #0156ff;
                         border-radius: 50px;
-                        padding: 8px 26px;
+                        color: #0156ff;
                     }
                 }
             }
@@ -299,15 +301,15 @@ export default class Header extends Vue {
                 .icon-hover {
                     padding: 5px;
                     &:hover {
-                        cursor: pointer;
                         background-color: rgb(214, 214, 214);
                         border-radius: 50%;
+                        cursor: pointer;
                     }
                 }
                 .search-option-header {
                     display: flex;
-                    flex-wrap: wrap;
                     flex-direction: row;
+                    flex-wrap: wrap;
                 }
             }
         }

@@ -18,35 +18,30 @@
         <el-container>
             <!-- filter Column -->
             <el-aside width="18%">
-                <!-- <filter-aside
-                    @handleFilter="handleFilter"
-                    @handleTagFilter="handleTagFilter"
-                /> -->
-
                 <div class="filter-column">
                     <b style="margin: 10px auto; font-size: 16px">Filters</b>
                     <button
                         class="filter-btn clear-filter-btn"
                         :class="numberFilter > 0 ? 'filter-btn-active' : ''"
-                        @click="handleClearFilterName"
+                        @click="clearFilterChosenList"
                     >
                         Clear Filter
                     </button>
                     <!-- ----------------Filter Options--------------- -->
                     <div class="option-filter-collapse">
-                        <el-collapse v-model="activeNames" @change="handleChange">
+                        <el-collapse v-model="collapseActives" @change="handleChange">
                             <el-collapse-item title="Category" name="Category">
                                 <!-- list item category filter -->
                                 <comp-select-text
                                     :listText="listItemCategoryFilter"
-                                    @selectText="handleChosenCategory"
+                                    @selectText="chosenCategory"
                                     :textSelectedProp="filterChosenList.category.name"
                                 />
                             </el-collapse-item>
                             <el-collapse-item title="Price" name="Price">
                                 <comp-select-text
                                     :listText="listItemPriceFilter"
-                                    @selectText="handleChosenPrice"
+                                    @selectText="chosenPrice"
                                     :textSelectedProp="filterChosenList.price.name"
                                 />
                             </el-collapse-item>
@@ -54,7 +49,7 @@
                                 <!-- list item color filter -->
                                 <comp-select-color
                                     :listColor="setColorFilter"
-                                    @selectColor="handleChosenColor"
+                                    @selectColor="chosenColor"
                                     :colorSelectedProp="filterChosenList.color.name"
                                 />
                             </el-collapse-item>
@@ -67,7 +62,7 @@
                     <button
                         class="filter-btn apply-filter-btn"
                         :class="numberFilter > 0 ? 'filter-btn-active' : ''"
-                        @click="handleFilter"
+                        @click="filter"
                     >
                         Apply Filters ({{ numberFilter }})
                     </button>
@@ -76,27 +71,26 @@
             <!-- filtered product list paginated and sorted -->
             <el-container>
                 <el-header>
-                    <!-- <filter-container-header :filterTagNameList="getFilterTagNameList" /> -->
                     <!-- options show product -->
                     <div class="header-optiops-filter">
                         <!-- The product order number is displayed -->
                         <div class="number-product-display">Items 1-35 of 61</div>
                         <div class="sort-show-options">
                             <!-- sort product option -->
-                            <element-dropdown-ct
+                            <comp-dropdown
                                 :nameElement="'Sort By:'"
                                 :options="sortOptions"
                             />
                             <!-- number of products displayed on 1 page -->
-                            <element-dropdown-ct
+                            <comp-dropdown
                                 :nameElement="'Show:'"
-                                :options="showOptions"
+                                :options="getpaginationOptionsName"
                             />
                             <div class="type-show-icon">
-                                <icon-component :iconName="'grid-icon'" />
+                                <comp-icon :iconName="'grid-icon'" />
                             </div>
                             <div class="type-show-icon">
-                                <icon-component :iconName="'list-icon'" />
+                                <comp-icon :iconName="'list-icon'" />
                             </div>
                         </div>
                     </div>
@@ -105,18 +99,18 @@
                         class="filter-product-tags"
                         v-show="filterTagNameList.length > 0"
                     >
-                        <filter-product-tag
+                        <filter-tag
                             v-for="(item, index) in filterTagNameList"
                             :key="index"
                             :filterChosen="item"
-                            @filter-delete-tag="deleteTagFilter(item.name, index)"
+                            @filter-delete-tag="handleDeleteFilterTag(item.name, index)"
                             class="filter-tag-btn"
                         >
-                            {{ item }} - {{ index }}</filter-product-tag
-                        >
+                            {{ item }} - {{ index }}
+                        </filter-tag>
                         <div
                             class="filter-tag-btn clear-filter-tag-btn"
-                            @click="handleClearFilter"
+                            @click="clearFilterTagList"
                         >
                             <b>Clear All</b>
                         </div>
@@ -124,12 +118,12 @@
                 </el-header>
                 <el-main>
                     <!-- list product catalog -->
-                    <card-product-catalog
+                    <product-card-catalog
                         v-for="(item, index) in productList"
                         :key="index"
                         :product="item"
                         v-show="checkSearchProduct(item.name)"
-                    ></card-product-catalog>
+                    ></product-card-catalog>
                 </el-main>
                 <el-footer>
                     <!-- pagnition -->
@@ -150,32 +144,50 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { productStore } from '../store';
-import ElementDropdownCt from '../components/element-custom/CompDropdown.vue';
-import FilterProductTag from '../components/catalog/FilterTag.vue';
-import CardProductCatalog from '../components/ProductCardCatalog.vue';
-import IconComponent from '../components/CompIcon.vue';
+import CompDropdown from '../components/element-custom/CompDropdown.vue';
+import FilterTag from '../components/catalog/FilterTag.vue';
+import ProductCardCatalog from '../components/ProductCardCatalog.vue';
+import CompIcon from '../components/CompIcon.vue';
 import CompSelectColor from '../components/CompSelectColor.vue';
 import CompSelectText from '../components/CompSelectText.vue';
-
-import { ITextItem } from '../types';
+import {
+    FILTER_PRICE_OPTION,
+    PAGINATION_OPTIONS,
+    SORT_OPTIONS,
+    TEXT_ITEM_DEFAULT,
+    FILTER_CHOSEN_LIST_DEFAULT,
+    FILTER_CHOSEN_PRICE_DEFAULT,
+} from '../contants';
+import { ITextItem, IFilterChosenList } from '../types';
 
 @Options({
     name: 'catalog',
     components: {
-        ElementDropdownCt,
-        FilterProductTag,
-        CardProductCatalog,
-        IconComponent,
+        CompDropdown,
+        FilterTag,
+        ProductCardCatalog,
+        CompIcon,
         CompSelectColor,
         CompSelectText,
     },
 })
 export default class Catalog extends Vue {
+    listItemPriceFilter = FILTER_PRICE_OPTION;
+    sortOptions = SORT_OPTIONS;
+    paginationOptions = PAGINATION_OPTIONS;
+    filterChosenList: IFilterChosenList = { ...FILTER_CHOSEN_LIST_DEFAULT };
+
+    collapseActives = ['Category', 'Price', 'Color', 'Filter Name'];
+    sortType = 'Positon';
     isFilterBtnActive = false;
+    productList = this.getProductListStore;
+
     filterTagNameList: Array<ITextItem> = [];
-    // sortByValue: string = 'Position';
-    // numberPerPage: string = '35 per page';
-    activeNames = ['Category', 'Price', 'Color', 'Filter Name'];
+    listItemCategoryFilter: Array<ITextItem> = [];
+    ListItemColorFilter: Array<ITextItem> = [];
+    setColorFilter = new Set();
+    numberFilter = 0;
+
     get getProductListStore() {
         return productStore.getProductList;
     }
@@ -188,86 +200,15 @@ export default class Catalog extends Vue {
         return this.filterTagNameList;
     }
 
-    productList = this.getProductListStore;
+    get getpaginationOptionsName() {
+        const nameList: Array<string> = [];
+        this.paginationOptions.forEach((element) => {
+            nameList.push(element.name);
+        });
+        return nameList;
+    }
 
-    listItemCategoryFilter: any[] = [];
-
-    listItemPriceFilter = [
-        {
-            name: '$0.00 - $1,000.00',
-            number: 0,
-            minPrice: 0,
-            maxPrice: 1000,
-        },
-        {
-            name: '$1,000.00 - $2,000.00',
-            number: 0,
-            minPrice: 1000,
-            maxPrice: 2000,
-        },
-        {
-            name: '$2,000.00 - $3,000.00',
-            number: 0,
-            minPrice: 2000,
-            maxPrice: 3000,
-        },
-        {
-            name: '$3,000.00 - $4,000.00',
-            number: 0,
-            minPrice: 3000,
-            maxPrice: 4000,
-        },
-        {
-            name: '$4,000.00 - $5,000.00',
-            number: 0,
-            minPrice: 4000,
-            maxPrice: 5000,
-        },
-        {
-            name: '$5,000.00 - $6,000.00',
-            number: 0,
-            minPrice: 5000,
-            maxPrice: 6000,
-        },
-        {
-            name: '$6,000.00 - $7,000.00',
-            number: 0,
-            minPrice: 6000,
-            maxPrice: 7000,
-        },
-        {
-            name: '$7,000.00 And Above',
-            number: 0,
-            minPrice: 7000,
-            maxPrice: Infinity,
-        },
-    ];
-
-    ListItemColorFilter: any[] = [];
-    setColorFilter = new Set();
-    sortType = 'Positon';
-    sortOptions = ['Position', 'Price', 'Name', 'Rate'];
-    showOptions = ['5 per page', '10 per page', '20 per page', '35 per page'];
-
-    numberFilter = 0;
-    filterChosenList: { [key: string]: any } = {
-        category: {
-            name: '',
-            number: 0,
-        },
-        price: {
-            name: '',
-            minPrice: 0,
-            maxPrice: 0,
-            number: 0,
-        },
-        color: {
-            name: '',
-            number: 0,
-        },
-    };
-
-    handleChosenCategory(item: ITextItem) {
+    chosenCategory(item: ITextItem) {
         let categoryFilter = this.filterChosenList.category;
         if (!categoryFilter.name) {
             this.numberFilter++;
@@ -275,59 +216,48 @@ export default class Catalog extends Vue {
         } else if (categoryFilter.name !== item.name) {
             categoryFilter = { ...item };
         } else {
-            categoryFilter = {
-                name: '',
-                number: 0,
-            };
+            categoryFilter = TEXT_ITEM_DEFAULT;
             this.numberFilter--;
         }
         this.filterChosenList.category = categoryFilter;
     }
 
-    handleChosenPrice(item: ITextItem) {
+    chosenPrice(item: ITextItem) {
         let price = this.filterChosenList.price;
-
         if (!price.name) {
             this.numberFilter++;
             price = { ...item };
         } else if (price.name !== item.name) {
             price = { ...item };
         } else {
-            price.name = '';
-            price.minPrice = 0;
-            price.maxPrice = 0;
+            price = FILTER_CHOSEN_PRICE_DEFAULT;
             this.numberFilter--;
         }
         this.filterChosenList.price = price;
     }
 
-    handleChosenColor(color: string) {
+    chosenColor(color: string) {
         let colorFilter = this.filterChosenList.color;
-        let item;
+        let item: ITextItem = TEXT_ITEM_DEFAULT;
         for (const itemColor of this.ListItemColorFilter) {
             if (itemColor.name === color) {
                 item = { ...itemColor };
                 break;
             }
         }
-        console.log(color, item);
-
         if (!colorFilter.name) {
             this.numberFilter++;
             colorFilter = { ...item };
         } else if (colorFilter.name !== item.name) {
             colorFilter = { ...item };
         } else {
-            colorFilter = {
-                name: '',
-                number: 0,
-            };
+            colorFilter = TEXT_ITEM_DEFAULT;
             this.numberFilter--;
         }
         this.filterChosenList.color = colorFilter;
     }
 
-    handleFilter() {
+    createFilterTagList() {
         this.filterTagNameList = [];
         for (const key in this.filterChosenList) {
             if (this.filterChosenList[key].name) {
@@ -337,7 +267,28 @@ export default class Catalog extends Vue {
                 });
             }
         }
+    }
 
+    clearFilterTagList(): void {
+        this.filterTagNameList = [];
+        this.productList = this.getProductListStore;
+        this.clearFilterChosenList();
+    }
+
+    handleDeleteFilterTag(tagName: string, index: number): void {
+        this.numberFilter--;
+        this.filterTagNameList.splice(index);
+        for (const key in this.filterChosenList) {
+            if (this.filterChosenList[key].name === tagName) {
+                this.filterChosenList[key].name = '';
+                break;
+            }
+        }
+        this.filter();
+    }
+
+    filter() {
+        this.createFilterTagList();
         this.productList = this.getProductListStore.filter((product) => {
             if (
                 this.filterChosenList.category.name !== '' &&
@@ -362,49 +313,12 @@ export default class Catalog extends Vue {
         });
     }
 
-    handleClearFilter(): void {
-        this.filterTagNameList = [];
-        this.productList = this.getProductListStore;
-        this.handleClearFilterName();
-    }
-
-    handleClearFilterName(): void {
-        this.filterChosenList = {
-            category: {
-                name: '',
-            },
-            price: {
-                name: '',
-                minPrice: 0,
-                maxPrice: 0,
-            },
-            color: {
-                name: '',
-            },
-        };
+    clearFilterChosenList(): void {
+        this.filterChosenList = { ...FILTER_CHOSEN_LIST_DEFAULT };
         this.numberFilter = 0;
     }
 
-    deleteTagFilter(tagName: string, index: number): void {
-        this.numberFilter--;
-        this.filterTagNameList.splice(index);
-        for (const key in this.filterChosenList) {
-            if (this.filterChosenList[key].name === tagName) {
-                this.filterChosenList[key].name = '';
-                break;
-            }
-        }
-        this.handleFilter();
-    }
-
-    // handleFilter(data: Array<IProduct>) {
-    //     this.productList = data;
-    // }
-
-    handleTagFilter(data: Array<ITextItem>) {
-        this.filterTagNameList = data;
-    }
-
+    // search product by name
     checkSearchProduct(name: string) {
         if (
             this.getInputSearch !== '' &&
@@ -416,6 +330,7 @@ export default class Catalog extends Vue {
     }
 
     mounted() {
+        // create list option filter
         this.productList.forEach((product) => {
             let found = false;
             for (const category of this.listItemCategoryFilter) {
@@ -470,23 +385,23 @@ export default class Catalog extends Vue {
     }
     .name-seris-product {
         box-sizing: content-box;
-        font-size: 32px;
         padding-left: 0;
         margin: 19px 0 30px 0;
+        font-size: 32px;
     }
 
     .el-aside {
-        background-color: #f5f7ff;
         padding: 0 16px 0 16px;
+        background-color: #f5f7ff;
         .filter-column {
             display: flex;
-            justify-content: center;
             flex-direction: column;
+            justify-content: center;
             .filter-btn {
                 width: 100%;
-                border-radius: 20px;
-                border: 1px solid #a2a6b0;
                 margin-bottom: 10px;
+                border: 1px solid #a2a6b0;
+                border-radius: 20px;
                 color: #a2a6b0;
                 font-size: 14px;
                 font-weight: 600;
@@ -495,14 +410,14 @@ export default class Catalog extends Vue {
                 box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
             }
             .filter-btn-active {
-                color: #fff;
                 background-color: #0156ff;
+                color: #fff;
                 box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
             }
             .option-filter-collapse {
                 .el-collapse-item__header {
-                    background-color: #f5f7ff;
                     font-weight: bold;
+                    background-color: #f5f7ff;
                 }
                 .el-collapse-item__content {
                     background-color: #f5f7ff;
@@ -515,16 +430,16 @@ export default class Catalog extends Vue {
         .header-optiops-filter {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             .number-product-display {
                 color: #b3b3b3;
             }
             .sort-show-options {
                 display: flex;
                 flex-wrap: wrap;
-                justify-content: space-between;
                 align-items: center;
+                justify-content: space-between;
                 .component-dropdown {
                     margin-right: 11px;
                 }
@@ -541,32 +456,32 @@ export default class Catalog extends Vue {
                 cursor: pointer;
             }
             .clear-filter-tag-btn {
-                border: 2px solid rgb(228 228 228);
                 padding: 10px 17px;
+                border: 2px solid rgb(228 228 228);
                 box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
             }
         }
     }
     .el-footer {
         .pagination-product-filter {
-            margin: 33px;
             display: flex;
             justify-content: center;
+            margin: 33px;
             li {
+                height: 36px !important;
+                width: 36px !important;
+                padding: 3px !important;
+                border: 2px solid #a2a6b0 !important;
                 border-radius: 18px !important;
-                background-color: #fff !important;
                 color: #a2a6b0 !important;
                 font-weight: 600 !important;
                 font-size: 13px !important;
-                border: 2px solid #a2a6b0 !important;
-                padding: 3px !important;
-                width: 36px !important;
-                height: 36px !important;
+                background-color: #fff !important;
             }
             .active {
-                background-color: #f5f7ff !important;
                 border: 2px solid #f5f7ff !important;
                 color: #000 !important;
+                background-color: #f5f7ff !important;
             }
         }
     }

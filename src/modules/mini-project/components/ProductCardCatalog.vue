@@ -78,6 +78,7 @@ import { productStore } from '../store';
 import { ICartItem } from '../types';
 
 @Options({
+    name: 'product-card-catalog',
     components: {
         IconComponent,
         CompRate,
@@ -115,38 +116,36 @@ export default class ProductCartCatalog extends Vue {
     .el-col {
         height: 100%;
         .grid-content {
-            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            height: 100%;
             .category-product-filter {
                 margin: 5% 0 3% 0;
             }
             .description-product-filter {
                 display: flex;
-                /* flex-wrap: wrap; */
                 justify-content: space-between;
                 .name-product-filter {
-                    margin-right: 46px;
                     min-width: 200px;
+                    margin-right: 46px;
                 }
             }
             .add-cart-btn {
-                color: #0156ff;
-                border: 2px solid #0156ff;
-                background-color: #fff;
-                border-radius: 20px;
-                padding: 5px 15px;
+                display: flex;
                 width: fit-content;
                 margin-top: 10px;
-                display: flex;
+                padding: 5px 15px;
+                border: 2px solid #0156ff;
+                border-radius: 20px;
+                color: #0156ff;
             }
         }
         .status-link-product-filter {
             div {
                 display: flex;
-                flex-wrap: wrap;
                 flex-direction: row;
+                flex-wrap: wrap;
                 align-items: center;
                 justify-content: flex-end;
                 .text-status-stock-product-filter {

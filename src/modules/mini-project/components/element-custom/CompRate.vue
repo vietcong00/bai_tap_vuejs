@@ -8,6 +8,7 @@
 import { Options, Vue } from 'vue-class-component';
 
 @Options({
+    name: 'comp-rate',
     props: {
         rate: Number,
         reviews: Number,
@@ -18,8 +19,8 @@ export default class CompRate extends Vue {}
 <style lang="scss">
 .comp-rate {
     display: flex;
-    flex-wrap: wrap;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     width: 100%;
     .el-rate {

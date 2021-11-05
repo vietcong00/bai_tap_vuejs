@@ -1,7 +1,8 @@
 <template lang="">
     <div class="select-color">
-        <ul>
+        <ul class="color-list">
             <li
+                class="color-element"
                 v-for="(item, index) in listColor"
                 :key="index"
                 @click="selectColor(item)"
@@ -16,6 +17,7 @@
 import { Options, Vue } from 'vue-class-component';
 
 @Options({
+    name: 'comp-select-color',
     props: {
         listColor: Array,
         colorSelectedProp: String,
@@ -37,22 +39,22 @@ export default class SelectColor extends Vue {
 </script>
 <style lang="scss" scoped>
 .select-color {
-    ul {
+    .color-list {
         display: flex;
-        flex-wrap: wrap;
         flex-direction: row;
-        list-style-type: none;
+        flex-wrap: wrap;
         padding: 0;
-        li {
-            cursor: pointer;
+        list-style-type: none;
+        .color-element {
             width: 31px;
             height: 31px;
-            border-radius: 50%;
             margin-right: 3px;
             padding: 2px;
+            border-radius: 50%;
+            cursor: pointer;
             .item-color {
-                width: 23px;
                 height: 23px;
+                width: 23px;
                 border-radius: 11.5px;
             }
         }

@@ -14,6 +14,7 @@ import { quantity } from '@/modules/example/contants';
 import { Options, Vue } from 'vue-class-component';
 
 @Options({
+    name: 'comp-input-number',
     props: {
         quantity: Number,
     },

@@ -1,7 +1,8 @@
 <template lang="">
     <div class="select-text">
-        <ul>
+        <ul class="text-list">
             <li
+                class="text-element"
                 v-for="(item, index) in listText"
                 :key="index"
                 @click="selectText(item)"
@@ -19,6 +20,7 @@ import { Options, Vue } from 'vue-class-component';
 import { ITextItem } from '../types';
 
 @Options({
+    name: 'comp-select-text',
     props: {
         listText: Array,
         textSelectedProp: String,
@@ -40,20 +42,20 @@ export default class SelectColor extends Vue {
 </script>
 <style lang="scss" scoped>
 .select-text {
-    ul {
-        list-style-type: none;
+    .text-list {
         display: flex;
-        flex-wrap: wrap;
         flex-direction: column;
+        flex-wrap: wrap;
         padding: 0;
-        li {
-            cursor: pointer;
+        list-style-type: none;
+        .text-element {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
             align-items: center;
-            font-size: 13px;
+            justify-content: space-between;
             padding: 0 10px;
+            font-size: 13px;
+            cursor: pointer;
             p {
                 margin: 5px 0;
             }

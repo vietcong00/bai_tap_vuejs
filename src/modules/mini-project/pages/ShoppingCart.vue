@@ -196,6 +196,7 @@ import IconComponent from '../components/CompIcon.vue';
 import CompInputNumber from '../components/element-custom/CompInputNumber.vue';
 
 @Options({
+    name: 'shopping-cart',
     components: {
         IconComponent,
         CompInputNumber,
@@ -316,13 +317,13 @@ export default class CardProductCart extends Vue {
                     }
                     .el-table__row {
                         .product__table__name {
+                            margin: 10px 0;
                             font-weight: 400;
                             font-size: 14px;
-                            margin: 10px 0;
                         }
                         .product__table__money {
-                            font-weight: 600;
                             font-size: 16px;
+                            font-weight: 600;
                         }
                     }
                 }
@@ -334,17 +335,17 @@ export default class CardProductCart extends Vue {
                 justify-content: space-between;
                 margin-top: 25px;
                 button {
-                    border-radius: 20px;
                     padding: 8px 30px;
+                    color: #a2a6b0;
                     font-size: 14px;
                     font-weight: 600;
-                    color: #a2a6b0;
-                    border: 2px solid #a2a6b0;
                     background-color: #fff;
+                    border: 2px solid #a2a6b0;
+                    border-radius: 20px;
                 }
                 .is-active {
-                    background-color: #000;
                     color: #fff;
+                    background-color: #000;
                     border: 2px solid #000;
                 }
                 .continue-clear-group {
@@ -356,17 +357,17 @@ export default class CardProductCart extends Vue {
         }
         .cart__content__summary-product {
             width: 34%;
-            padding: 30px;
             margin: 0 20px;
+            padding: 30px;
             background-color: #f5f7ff;
             .summary__tittle-element {
-                font-weight: 600;
                 font-size: 13px;
+                font-weight: 600;
                 line-height: 27.3px;
             }
             .summary__titlle {
-                font-weight: 600;
                 font-size: 24px;
+                font-weight: 600;
                 line-height: 36px;
             }
             .summary__option {
@@ -375,23 +376,22 @@ export default class CardProductCart extends Vue {
                     border: none !important;
                     .el-collapse-item {
                         .el-collapse-item__header {
-                            font-weight: 400;
-                            font-size: 18px;
-                            background-color: #f5f7ff;
-                            line-height: 27px;
                             display: flex;
                             flex-wrap: wrap;
                             align-items: flex-start;
                             height: auto;
+                            font-size: 18px;
+                            font-weight: 400;
+                            line-height: 27px;
+                            background-color: #f5f7ff;
                             border: none !important;
-
                             .shipping-tax__description {
-                                font-weight: 400;
-                                font-size: 14px;
-                                color: #666666;
-                                line-height: 21px;
                                 width: 70%;
                                 margin: 12px 0;
+                                color: #666666;
+                                font-size: 14px;
+                                font-weight: 400;
+                                line-height: 21px;
                             }
                             i {
                                 margin-top: 4px;
@@ -415,14 +415,14 @@ export default class CardProductCart extends Vue {
                                 }
                                 .discount-code__apply {
                                     width: 100%;
-                                    border-radius: 30px;
+                                    margin: 20px 0;
+                                    padding: 10px 0;
                                     color: #0156ff;
-                                    font-weight: 600;
                                     font-size: 14px;
+                                    font-weight: 600;
+                                    border-radius: 30px;
                                     border: 1px solid #0156ff;
                                     background-color: #f5f7ff;
-                                    padding: 10px 0;
-                                    margin: 20px 0;
                                 }
                             }
                         }
@@ -430,8 +430,8 @@ export default class CardProductCart extends Vue {
                 }
             }
             .summary__detail-order {
-                border-top: 1px solid #cacdd8;
                 padding-top: 10px;
+                border-top: 1px solid #cacdd8;
                 .list-detail-order div {
                     display: flex;
                     flex-wrap: wrap;
@@ -444,20 +444,20 @@ export default class CardProductCart extends Vue {
                         width: 70%;
                     }
                     .list-detail-order__element__description {
-                        font-weight: 400;
-                        font-size: 10px;
                         color: #a2a6b0;
+                        font-size: 10px;
+                        font-weight: 400;
                     }
                 }
                 .checkout-btn {
                     width: 100%;
-                    border-radius: 30px;
-                    color: #fff;
-                    font-weight: 600;
-                    font-size: 14px;
-                    background-color: #0156ff;
-                    padding: 10px 0;
                     margin: 20px 0;
+                    padding: 10px 0;
+                    color: #fff;
+                    font-size: 14px;
+                    font-weight: 600;
+                    background-color: #0156ff;
+                    border-radius: 30px;
                 }
             }
         }

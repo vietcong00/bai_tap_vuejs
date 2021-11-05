@@ -44,16 +44,16 @@ export default class Catalog extends Vue {
 
 <style lang="scss" scope>
 .filter-product-tag {
-    border: 2px solid rgb(228 228 228);
     display: flex;
     flex-wrap: wrap;
-    width: fit-content;
-    padding: 10px 17px;
     margin-right: 6px;
+    padding: 10px 17px;
+    width: fit-content;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border: 2px solid rgb(228 228 228);
     .number-product-tag {
-        color: rgb(192, 192, 192);
         margin-left: 5px;
+        color: rgb(192, 192, 192);
     }
     .delete-tag {
         margin-left: 5px;

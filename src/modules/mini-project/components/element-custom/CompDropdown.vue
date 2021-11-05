@@ -24,7 +24,7 @@
 
 <script>
 export default {
-    name: 'el-dropdown-ct',
+    name: 'Comp-dropdown',
     props: {
         nameElement: {
             type: String,
@@ -40,8 +40,8 @@ export default {
 .component-dropdown {
     display: flex;
     flex-wrap: wrap;
-    border: 2px solid #d0d0d0;
     align-items: center;
     padding: 11px 10px 11px 22px;
+    border: 2px solid #d0d0d0;
 }
 </style>

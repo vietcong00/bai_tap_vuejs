@@ -1,6 +1,6 @@
 import { getModule, VuexModule, Mutation, Action, Module } from 'vuex-module-decorators';
 import store from '@/store';
-import { IProduct, ICartItem, IFilterChosen } from './types';
+import { IProduct, ICartItem, IFilterChosenList } from './types';
 
 // import { exampleService } from './services/api.service';
 
@@ -8,7 +8,7 @@ import { IProduct, ICartItem, IFilterChosen } from './types';
 class ProductStore extends VuexModule {
     count = 0;
     inputSearchHeader = '';
-    filterChosenList: IFilterChosen = {
+    filterChosenList: IFilterChosenList = {
         category: {
             name: '',
             number: 0,
@@ -377,7 +377,7 @@ class ProductStore extends VuexModule {
     }
 
     @Mutation
-    UPDATE_FILTER_CHOSEN_LIST(data: IFilterChosen) {
+    UPDATE_FILTER_CHOSEN_LIST(data: IFilterChosenList) {
         this.filterChosenList = data;
     }
 
@@ -421,7 +421,7 @@ class ProductStore extends VuexModule {
     }
 
     @Action
-    updateFilterChosenList(data: IFilterChosen) {
+    updateFilterChosenList(data: IFilterChosenList) {
         this.UPDATE_FILTER_CHOSEN_LIST(data);
     }
 }

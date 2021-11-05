@@ -335,7 +335,7 @@
 
 <script>
 export default {
-    name: 'icon-component',
+    name: 'comp-icon',
     props: {
         iconName: {
             type: String,

@@ -29,6 +29,6 @@ export interface ITextItem {
     number: number;
 }
 
-export interface IFilterChosen {
+export interface IFilterChosenList {
     [key: string]: any;
 }
