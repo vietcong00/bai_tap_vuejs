@@ -1,9 +1,7 @@
 <template>
     <div class="catalog">
         <!-- banner -->
-        <div class="banner-img">
-            <img src="../../../assets/images/mini-project/banner.png" />
-        </div>
+        <img class="image-banner" src="../../../assets/images/mini-project/banner.png" />
         <!-- breadcrumb -->
         <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
@@ -378,112 +376,92 @@ export default class Catalog extends Vue {
 </script>
 
 <style lang="scss">
-.catalog {
-    .banner-img img {
-        width: -webkit-fill-available;
-        margin: 0 0 19px 0;
-    }
-    .name-seris-product {
-        box-sizing: content-box;
-        padding-left: 0;
-        margin: 19px 0 30px 0;
-        font-size: 32px;
-    }
+.image-banner {
+    width: -webkit-fill-available;
+    margin: 0 0 19px 0;
+}
+.name-seris-product {
+    box-sizing: content-box;
+    padding-left: 0;
+    margin: 19px 0 30px 0;
+    font-size: 32px;
+}
 
-    .el-aside {
-        padding: 0 16px 0 16px;
-        background-color: #f5f7ff;
-        .filter-column {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            .filter-btn {
-                width: 100%;
-                margin-bottom: 10px;
-                border: 1px solid #a2a6b0;
-                border-radius: 20px;
-                color: #a2a6b0;
-                font-size: 14px;
-                font-weight: 600;
-                padding: 10px 0;
-                background-color: #f5f7ff;
-                box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-            }
-            .filter-btn-active {
-                background-color: #0156ff;
-                color: #fff;
-                box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-            }
-            .option-filter-collapse {
-                .el-collapse-item__header {
-                    font-weight: bold;
-                    background-color: #f5f7ff;
-                }
-                .el-collapse-item__content {
-                    background-color: #f5f7ff;
-                }
-            }
+.el-aside {
+    padding: 0 16px 0 16px;
+    background-color: #f5f7ff;
+    .filter-column {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .filter-btn {
+            width: 100%;
+            margin-bottom: 10px;
+            border: 1px solid #a2a6b0;
+            border-radius: 20px;
+            color: #a2a6b0;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 0;
+            background-color: #f5f7ff;
+            box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        }
+        .filter-btn-active {
+            background-color: #0156ff;
+            color: #fff;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        }
+
+        .el-collapse-item__header {
+            font-weight: bold;
+            background-color: #f5f7ff;
+        }
+        .el-collapse-item__content {
+            background-color: #f5f7ff;
         }
     }
-    .el-header {
-        height: auto !important;
-        .header-optiops-filter {
+}
+.el-header {
+    height: auto !important;
+    .header-optiops-filter {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        .number-product-display {
+            color: #b3b3b3;
+        }
+        .sort-show-options {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            .number-product-display {
-                color: #b3b3b3;
+            .component-dropdown {
+                margin-right: 11px;
             }
-            .sort-show-options {
-                display: flex;
-                flex-wrap: wrap;
-                align-items: center;
-                justify-content: space-between;
-                .component-dropdown {
-                    margin-right: 11px;
-                }
-                .type-show-icon {
-                    margin-left: 9px;
-                }
-            }
-        }
-        .filter-product-tags {
-            display: flex;
-            flex-wrap: wrap;
-            margin-top: 5px;
-            .filter-tag-btn {
-                cursor: pointer;
-            }
-            .clear-filter-tag-btn {
-                padding: 10px 17px;
-                border: 2px solid rgb(228 228 228);
-                box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+            .type-show-icon {
+                margin-left: 9px;
             }
         }
     }
-    .el-footer {
-        .pagination-product-filter {
-            display: flex;
-            justify-content: center;
-            margin: 33px;
-            li {
-                height: 36px !important;
-                width: 36px !important;
-                padding: 3px !important;
-                border: 2px solid #a2a6b0 !important;
-                border-radius: 18px !important;
-                color: #a2a6b0 !important;
-                font-weight: 600 !important;
-                font-size: 13px !important;
-                background-color: #fff !important;
-            }
-            .active {
-                border: 2px solid #f5f7ff !important;
-                color: #000 !important;
-                background-color: #f5f7ff !important;
-            }
+    .filter-product-tags {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 5px;
+        .filter-tag-btn {
+            cursor: pointer;
+        }
+        .clear-filter-tag-btn {
+            padding: 10px 17px;
+            border: 2px solid rgb(228 228 228);
+            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
         }
     }
+}
+// el-footer
+.pagination-product-filter {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
 }
 </style>

@@ -19,23 +19,4 @@ import { Options, Vue } from 'vue-class-component';
 })
 export default class ProductParameterTable extends Vue {}
 </script>
-<style lang="scss">
-.product-parameter-table {
-    width: fit-content;
-    border: 1px solid rgb(212, 239, 255);
-    .el-table {
-        thead {
-            tr {
-                display: none;
-            }
-        }
-        tr:nth-child(2n) {
-            background-color: #f5f7ff;
-        }
-
-        tr:nth-child(2n + 1) {
-            background-color: #fff;
-        }
-    }
-}
-</style>
+<style lang="scss"></style>

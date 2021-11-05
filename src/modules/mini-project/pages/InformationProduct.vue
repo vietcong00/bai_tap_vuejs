@@ -4,7 +4,7 @@
             <el-row>
                 <el-col :span="14"
                     ><div class="grid-content information-product-tab">
-                        <el-tabs v-model="activeName" @tab-click="handleClick">
+                        <el-tabs v-model="tabActive" @tab-click="handleClick">
                             <el-tab-pane
                                 label="About Product"
                                 name="about-product"
@@ -166,115 +166,111 @@ export default class CardProductCart extends Vue {
 </script>
 
 <style lang="scss">
-.information-product {
-    .header-information-product {
-        padding: 20px 0;
-        border-bottom: 1px solid #cacdd8;
-        .el-tabs {
-            .el-tabs__item {
-                height: 22px;
-                margin-top: 9px;
-                color: #666666;
-                font-size: 14px;
-                font-weight: 600;
-                line-height: 21px;
-            }
-
-            .el-tabs__nav-wrap::after {
-                width: 0;
-            }
-            .is-active {
-                color: #000;
-            }
+.header-information-product {
+    padding: 20px 0;
+    border-bottom: 1px solid #cacdd8;
+    .el-tabs {
+        .el-tabs__item {
+            height: 22px;
+            margin-top: 9px;
+            color: #666666;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 21px;
         }
-        .price-cart-product {
+
+        .el-tabs__nav-wrap::after {
+            width: 0;
+        }
+        .is-active {
+            color: #000;
+        }
+    }
+    .price-cart-product {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-items: center;
+        .price-information-product {
+            font-size: 14px;
+            line-height: 21px;
+        }
+        .comp-input-number {
+            margin: 0 30px;
+        }
+        .add-cart-btn {
+            padding: 10px 30px;
+            color: #fff;
+            font: size 14px;
+            font-weight: 600;
+            line-height: 21px;
+            background-color: #0156ff;
+            border-radius: 30px;
+        }
+    }
+}
+.description-product-group {
+    padding: 60px 10% 60px 25%;
+    background-color: #f5f7ff;
+    .header-description-product-group {
+        padding-bottom: 24px;
+        .seris-name-product {
+            padding: 25px 0 13px 0;
+            font-size: 32px;
+            font-weight: 500;
+            line-height: 48px;
+        }
+        .review-product-link {
+            color: #0156ff;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 18px;
+        }
+    }
+    .content-description-product-group {
+        margin-bottom: 31px;
+        .name-product {
+            margin-bottom: 46px;
+            font-size: 18px;
+            font-weight: 300;
+            line-height: 30px;
+        }
+
+        .list-detail-product {
+            font-size: 14px;
+            font-weight: 300;
+        }
+    }
+
+    .category-contact-product {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20%;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 18px;
+        .contact-group {
             display: flex;
-            flex-wrap: wrap;
-            flex-direction: row;
-            align-items: center;
-            .price-information-product {
-                font-size: 14px;
-                line-height: 21px;
-            }
-            .comp-input-number {
-                margin: 0 30px;
-            }
-            .add-cart-btn {
-                padding: 10px 30px;
-                color: #fff;
-                font: size 14px;
-                font-weight: 600;
-                line-height: 21px;
-                background-color: #0156ff;
-                border-radius: 30px;
+            .contact-us {
+                padding-left: 10px;
+                color: #0156ff;
             }
         }
     }
-    .content-information-product {
-        .description-product-group {
-            padding: 60px 10% 60px 25%;
-            background-color: #f5f7ff;
-            .header-description-product-group {
-                padding-bottom: 24px;
-                .seris-name-product {
-                    padding: 25px 0 13px 0;
-                    font-size: 32px;
-                    font-weight: 500;
-                    line-height: 48px;
-                }
-                .review-product-link {
-                    color: #0156ff;
-                    font-size: 12px;
-                    font-weight: 400;
-                    line-height: 18px;
-                }
-            }
-            .content-description-product-group {
-                margin-bottom: 31px;
-                .name-product {
-                    margin-bottom: 46px;
-                    font-size: 18px;
-                    font-weight: 300;
-                    line-height: 30px;
-                }
+    .more-information {
+        margin-left: -20%;
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 27px;
+    }
 
-                .list-detail-product {
-                    font-size: 14px;
-                    font-weight: 300;
-                }
-            }
-            .footer-description-product-group {
-                .category-contact-product {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-bottom: 20%;
-                    font-size: 12px;
-                    font-weight: 600;
-                    line-height: 18px;
-                    .contact-group {
-                        display: flex;
-                        .contact-us {
-                            padding-left: 10px;
-                            color: #0156ff;
-                        }
-                    }
-                }
-                .more-information {
-                    margin-left: -20%;
-                    font-weight: 700;
-                    font-size: 18px;
-                    line-height: 27px;
-                }
-            }
-        }
-        .image__link__information-product {
-            display: flex;
-            flex-direction: row;
-            .link__information-product {
-                margin: 20px 0 0 25px;
-                .icon-component {
-                    margin-bottom: 7px;
-                }
+    .image__link__information-product {
+        display: flex;
+        flex-direction: row;
+        .link__information-product {
+            margin: 20px 0 0 25px;
+            .icon-component {
+                margin-bottom: 7px;
             }
         }
     }

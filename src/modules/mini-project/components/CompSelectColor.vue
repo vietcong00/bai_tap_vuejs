@@ -38,29 +38,27 @@ export default class SelectColor extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.select-color {
-    .color-list {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        padding: 0;
-        list-style-type: none;
-        .color-element {
-            width: 31px;
-            height: 31px;
-            margin-right: 3px;
-            padding: 2px;
-            border-radius: 50%;
-            cursor: pointer;
-            .item-color {
-                height: 23px;
-                width: 23px;
-                border-radius: 11.5px;
-            }
+.color-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0;
+    list-style-type: none;
+    .color-element {
+        width: 31px;
+        height: 31px;
+        margin-right: 3px;
+        padding: 2px;
+        border-radius: 50%;
+        cursor: pointer;
+        .item-color {
+            height: 23px;
+            width: 23px;
+            border-radius: 11.5px;
         }
-        .active {
-            border: 2px solid #0156ff;
-        }
+    }
+    .active {
+        border: 2px solid #0156ff;
     }
 }
 </style>

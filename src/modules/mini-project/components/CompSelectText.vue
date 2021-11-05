@@ -9,8 +9,8 @@
                 v-show="item.number > 0"
                 :class="textSelectedProp && item.name === textSelected ? 'active' : ''"
             >
-                <p>{{ item.name }}</p>
-                <p>{{ item.number }}</p>
+                <p class="text-element__info">{{ item.name }}</p>
+                <p class="text-element__info">{{ item.number }}</p>
             </li>
         </ul>
     </div>
@@ -41,30 +41,28 @@ export default class SelectColor extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.select-text {
-    .text-list {
+.text-list {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 0;
+    list-style-type: none;
+    .text-element {
         display: flex;
-        flex-direction: column;
         flex-wrap: wrap;
-        padding: 0;
-        list-style-type: none;
-        .text-element {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 10px;
-            font-size: 13px;
-            cursor: pointer;
-            p {
-                margin: 5px 0;
-            }
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 10px;
+        font-size: 13px;
+        cursor: pointer;
+        .text-element__info {
+            margin: 5px 0;
         }
-        .active {
-            border: 2px solid #000000;
-            border-radius: 10px;
-            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-        }
+    }
+    .active {
+        border: 2px solid #000000;
+        border-radius: 10px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     }
 }
 </style>

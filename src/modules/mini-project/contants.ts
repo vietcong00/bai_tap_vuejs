@@ -1,3 +1,14 @@
+export const ITEM_NAVBAR_LIST = [
+    'Laptops',
+    'Desktop PCs',
+    'Networking Devices',
+    'Printers & Scanners',
+    'PC Parts',
+    'All Other Products',
+    'Repairs',
+    'Our Deals',
+];
+
 export const FILTER_PRICE_OPTION = [
     {
         name: '$0.00 - $1,000.00',

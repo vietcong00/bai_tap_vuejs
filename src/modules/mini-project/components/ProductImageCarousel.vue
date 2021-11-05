@@ -51,41 +51,5 @@ export default class ProductImageCarousel extends Vue {}
             border-left: 2px solid #00aeb8;
         }
     }
-    .el-carousel {
-        .el-carousel__container {
-            height: 500px;
-            width: 500px;
-        }
-        .el-carousel__item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            img {
-                height: auto;
-                width: auto;
-            }
-            h3 {
-                text-align: center;
-                height: 100%;
-                margin: 0;
-            }
-        }
-        .el-carousel__indicators {
-            li {
-                button {
-                    height: 10px;
-                    width: 10px;
-                    background-color: #cacdd8;
-                    border-radius: 50%;
-                }
-            }
-            .is-active {
-                button {
-                    background-color: #0156ff;
-                }
-            }
-        }
-    }
 }
 </style>

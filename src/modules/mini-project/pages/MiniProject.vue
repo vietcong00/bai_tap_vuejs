@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import HeaderComp from '../components/Header.vue';
+import HeaderComp from '../components/header/Header.vue';
 import Catalog from './Catalog.vue';
 import { Options, Vue } from 'vue-class-component';
 import InformationProduct from './InformationProduct.vue';
@@ -25,18 +25,7 @@ import ShoppingCart from './ShoppingCart.vue';
         ShoppingCart,
     },
 })
-export default class HomeProject extends Vue {
-    listItemNavbar = [
-        'Laptops',
-        'Desktop PCs',
-        'Networking Devices',
-        'Printers & Scanners',
-        'PC Parts',
-        'All Other Products',
-        'Repairs',
-        'Our Deals',
-    ];
-}
+export default class HomeProject extends Vue {}
 </script>
 
 <style lang="scss" scoped>

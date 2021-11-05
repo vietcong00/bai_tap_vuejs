@@ -9,7 +9,10 @@
                         >
                             <img :src="product.imgLink" style="width: 100%" />
                         </router-link>
-                        <comp-rate :rate="product.rate" :reviews="product.reviews" />
+                        <div class="comp-rate">
+                            <el-rate v-model="product.rate" disabled />
+                            <p class="review-text">Reviews ({{ product.reviews }})</p>
+                        </div>
                     </div>
                 </el-col>
                 <el-col :span="14" style="height: auto">
@@ -39,7 +42,10 @@
                 </el-col>
                 <el-col :span="4" style="height: auto">
                     <div class="grid-content status-link-product-filter">
-                        <div v-if="product.statusStock == 'in stock'">
+                        <div
+                            class="status-link-group__element"
+                            v-if="product.statusStock == 'in stock'"
+                        >
                             <icon-component :iconName="'checked-icon'" />
                             <p
                                 class="text-status-stock-product-filter"
@@ -48,7 +54,7 @@
                                 in stock
                             </p>
                         </div>
-                        <div v-else>
+                        <div class="status-link-group__element" v-else>
                             <icon-component :iconName="'cancel-icon'" />
                             <p
                                 class="text-status-stock-product-filter"
@@ -57,7 +63,7 @@
                                 out stock
                             </p>
                         </div>
-                        <div class="link-product-filter">
+                        <div class="link-product-filter status-link-group__element">
                             <icon-component :iconName="'mail-icon'" />
                             <icon-component :iconName="'rank-icon'" />
                             <icon-component :iconName="'love-icon'" />
@@ -72,7 +78,6 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import IconComponent from './CompIcon.vue';
-import CompRate from './element-custom/CompRate.vue';
 import ProductParameterTable from '../components/ProductParameterTable.vue';
 import { productStore } from '../store';
 import { ICartItem } from '../types';
@@ -81,7 +86,6 @@ import { ICartItem } from '../types';
     name: 'product-card-catalog',
     components: {
         IconComponent,
-        CompRate,
         ProductParameterTable,
     },
     props: {
@@ -141,20 +145,19 @@ export default class ProductCartCatalog extends Vue {
                 color: #0156ff;
             }
         }
-        .status-link-product-filter {
-            div {
-                display: flex;
-                flex-direction: row;
-                flex-wrap: wrap;
-                align-items: center;
-                justify-content: flex-end;
-                .text-status-stock-product-filter {
-                    margin: 0 0 0 4px;
-                }
+
+        .status-link-group__element {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-end;
+            .text-status-stock-product-filter {
+                margin: 0 0 0 4px;
             }
-            .link-product-filter .icon-component {
-                margin-left: 6px;
-            }
+        }
+        .link-product-filter .icon-component {
+            margin-left: 6px;
         }
     }
 }
