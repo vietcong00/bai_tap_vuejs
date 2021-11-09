@@ -13,12 +13,11 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { productStore } from '../../store';
 import IconComponent from '../CompIcon.vue';
 import GeneralInfomation from '../header/GeneralInfomation.vue';
 import OptionHeader from '../header/OptionHeader.vue';
 import NavbarHeader from '../header/NavbarHeader.vue';
-
-import { productStore } from '../../store';
 
 @Options({
     name: 'header',

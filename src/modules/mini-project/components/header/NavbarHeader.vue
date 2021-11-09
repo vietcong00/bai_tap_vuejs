@@ -29,10 +29,9 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import IconComponent from '../CompIcon.vue';
-import { ITEM_NAVBAR_LIST } from '../../contants';
-
 import { productStore } from '../../store';
+import { ITEM_NAVBAR_LIST } from '../../contants';
+import IconComponent from '../CompIcon.vue';
 
 @Options({
     name: 'navbar-header',

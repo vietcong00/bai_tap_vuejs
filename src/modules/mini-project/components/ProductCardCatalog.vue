@@ -28,10 +28,10 @@
                         </div>
                         <div class="price-product-filter">
                             <del style="font-size: 15px">
-                                {{ formatPriceUS(product.oldPrice) }}
+                                {{ formatCurrency(product.oldPrice) }}
                             </del>
                             <b style="padding-left: 7px; font-size: 18px">
-                                {{ formatPriceUS(product.newPrice) }}
+                                {{ formatCurrency(product.newPrice) }}
                             </b>
                         </div>
                         <button class="add-cart-btn" @click="addToCart(product.id)">
@@ -77,10 +77,11 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import IconComponent from './CompIcon.vue';
-import ProductParameterTable from '../components/ProductParameterTable.vue';
 import { productStore } from '../store';
 import { ICartItem } from '../types';
+import { formatCurrency } from '../util';
+import IconComponent from './CompIcon.vue';
+import ProductParameterTable from '../components/ProductParameterTable.vue';
 
 @Options({
     name: 'product-card-catalog',
@@ -91,17 +92,11 @@ import { ICartItem } from '../types';
     props: {
         product: Object,
     },
+    methods: {
+        formatCurrency,
+    },
 })
 export default class ProductCartCatalog extends Vue {
-    // product!: Record<string, string>;
-
-    formatPriceUS(price: number) {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-        }).format(price);
-    }
-
     addToCart(id: string) {
         const cartItem: ICartItem = {
             id: id || '',

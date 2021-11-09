@@ -72,17 +72,24 @@
                     <!-- options show product -->
                     <div class="header-optiops-filter">
                         <!-- The product order number is displayed -->
-                        <div class="number-product-display">Items 1-35 of 61</div>
-                        <div class="sort-show-options">
+                        <div class="number-product-display">
+                            Items {{ numberProductInPageStart }}-{{
+                                numberProductInPageEnd
+                            }}
+                            of {{ getNumberTotalProduct }}
+                        </div>
+                        <div class="sort-paging-options">
                             <!-- sort product option -->
                             <comp-dropdown
                                 :nameElement="'Sort By:'"
                                 :options="sortOptions"
+                                @selectText="sortingProduct"
                             />
                             <!-- number of products displayed on 1 page -->
                             <comp-dropdown
                                 :nameElement="'Show:'"
-                                :options="getpaginationOptionsName"
+                                :options="getPaginationOptionsName"
+                                @selectText="pagingProduct"
                             />
                             <div class="type-show-icon">
                                 <comp-icon :iconName="'grid-icon'" />
@@ -91,6 +98,7 @@
                                 <comp-icon :iconName="'list-icon'" />
                             </div>
                         </div>
+                        <sort-and-paging :productList="productList" />
                     </div>
                     <!-- tag filter product -->
                     <div
@@ -113,27 +121,33 @@
                             <b>Clear All</b>
                         </div>
                     </div>
+                    <!-- Search results for keyword -->
+                    <div class="search-results-keyword" v-show="getInputSearch">
+                        <div>Search results for keyword :</div>
+                        <div class="search-keyword">
+                            {{ getInputSearch }}
+                        </div>
+                    </div>
                 </el-header>
                 <el-main>
                     <!-- list product catalog -->
                     <product-card-catalog
-                        v-for="(item, index) in productList"
+                        v-for="(item, index) in productListPaging"
                         :key="index"
                         :product="item"
-                        v-show="checkSearchProduct(item.name)"
                     ></product-card-catalog>
-                </el-main>
-                <el-footer>
                     <!-- pagnition -->
                     <div class="pagination-product-filter">
                         <el-pagination
                             background
                             layout="prev, pager, next"
-                            :total="1000"
+                            :total="productList.length"
+                            :page-size="pageSize"
+                            @current-change="changePage"
                         >
                         </el-pagination>
                     </div>
-                </el-footer>
+                </el-main>
             </el-container>
         </el-container>
     </div>
@@ -142,12 +156,6 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { productStore } from '../store';
-import CompDropdown from '../components/element-custom/CompDropdown.vue';
-import FilterTag from '../components/catalog/FilterTag.vue';
-import ProductCardCatalog from '../components/ProductCardCatalog.vue';
-import CompIcon from '../components/CompIcon.vue';
-import CompSelectColor from '../components/CompSelectColor.vue';
-import CompSelectText from '../components/CompSelectText.vue';
 import {
     FILTER_PRICE_OPTION,
     PAGINATION_OPTIONS,
@@ -155,8 +163,16 @@ import {
     TEXT_ITEM_DEFAULT,
     FILTER_CHOSEN_LIST_DEFAULT,
     FILTER_CHOSEN_PRICE_DEFAULT,
+    PAGE_SIZE_DEFAULT,
 } from '../contants';
-import { ITextItem, IFilterChosenList } from '../types';
+import { ITextItem, IFilterChosenList, SortType } from '../types';
+import CompDropdown from '../components/element-custom/CompDropdown.vue';
+import FilterTag from '../components/catalog/FilterTag.vue';
+import ProductCardCatalog from '../components/ProductCardCatalog.vue';
+import CompIcon from '../components/CompIcon.vue';
+import CompSelectColor from '../components/CompSelectColor.vue';
+import CompSelectText from '../components/CompSelectText.vue';
+import SortAndPaging from '../components/catalog/SortAndPaging.vue';
 
 @Options({
     name: 'catalog',
@@ -167,6 +183,7 @@ import { ITextItem, IFilterChosenList } from '../types';
         CompIcon,
         CompSelectColor,
         CompSelectText,
+        SortAndPaging,
     },
 })
 export default class Catalog extends Vue {
@@ -179,31 +196,52 @@ export default class Catalog extends Vue {
     sortType = 'Positon';
     isFilterBtnActive = false;
     productList = this.getProductListStore;
+    productListPaging = this.getProductListStore;
 
     filterTagNameList: Array<ITextItem> = [];
     listItemCategoryFilter: Array<ITextItem> = [];
     ListItemColorFilter: Array<ITextItem> = [];
     setColorFilter = new Set();
     numberFilter = 0;
+    pageSize = PAGE_SIZE_DEFAULT;
+    pageNumber = 1;
+    numberProductInPageStart = 1;
+    numberProductInPageEnd = 1;
+    numberProductTotal = this.productList.length;
+    typeDescEsc = 1;
 
     get getProductListStore() {
         return productStore.getProductList;
     }
 
     get getInputSearch() {
-        return productStore.getInputSearch;
+        const textSearch = productStore.getInputSearch;
+        if (textSearch) {
+            this.productList = [];
+            this.getProductListStore.forEach((element) => {
+                if (element.name.toLowerCase().indexOf(textSearch.toLowerCase()) >= 0) {
+                    this.productList.push(element);
+                }
+            });
+        }
+        this.pagingProduct(this.pageSize);
+        return textSearch;
     }
 
     get getFilterTagNameList() {
         return this.filterTagNameList;
     }
 
-    get getpaginationOptionsName() {
+    get getPaginationOptionsName() {
         const nameList: Array<string> = [];
         this.paginationOptions.forEach((element) => {
             nameList.push(element.name);
         });
         return nameList;
+    }
+
+    get getNumberTotalProduct() {
+        return this.productList.length;
     }
 
     chosenCategory(item: ITextItem) {
@@ -271,6 +309,7 @@ export default class Catalog extends Vue {
         this.filterTagNameList = [];
         this.productList = this.getProductListStore;
         this.clearFilterChosenList();
+        this.pagingProduct(this.pageSize);
     }
 
     handleDeleteFilterTag(tagName: string, index: number): void {
@@ -309,22 +348,12 @@ export default class Catalog extends Vue {
             }
             return true;
         });
+        this.pagingProduct(this.pageSize);
     }
 
     clearFilterChosenList(): void {
         this.filterChosenList = { ...FILTER_CHOSEN_LIST_DEFAULT };
         this.numberFilter = 0;
-    }
-
-    // search product by name
-    checkSearchProduct(name: string) {
-        if (
-            this.getInputSearch !== '' &&
-            name.toLowerCase().indexOf(this.getInputSearch.toLowerCase()) < 0
-        ) {
-            return false;
-        }
-        return true;
     }
 
     mounted() {
@@ -371,6 +400,67 @@ export default class Catalog extends Vue {
                 }
             }
         });
+        this.pagingProduct(this.pageSize);
+    }
+
+    pagingProduct(pageSize: number | string) {
+        if (typeof pageSize === 'number') {
+            this.pageSize = pageSize;
+        } else {
+            const value = this.paginationOptions.find((element) => {
+                return element.name === pageSize;
+            })?.value;
+            if (value) {
+                this.pageSize = value;
+            }
+        }
+        this.changePage(this.pageNumber);
+    }
+
+    changePage(e: number) {
+        this.pageNumber = e;
+        this.numberProductInPageStart = (this.pageNumber - 1) * this.pageSize + 1;
+        this.numberProductInPageStart =
+            this.numberProductInPageStart > this.productList.length
+                ? this.productList.length
+                : this.numberProductInPageStart;
+        this.numberProductInPageEnd = this.numberProductInPageStart + this.pageSize - 1;
+        this.numberProductInPageEnd =
+            this.numberProductInPageEnd > this.productList.length
+                ? this.productList.length
+                : this.numberProductInPageEnd;
+        const start = (this.pageNumber - 1) * this.pageSize;
+        this.productListPaging = this.productList.slice(start, start + this.pageSize);
+    }
+
+    sortingProduct(sortType: SortType) {
+        this.typeDescEsc = -this.typeDescEsc;
+        this.productList.sort((a, b) => {
+            switch (sortType) {
+                case 'Name':
+                    sortType = 'name';
+                    break;
+                case 'Rate':
+                    sortType = 'rate';
+                    break;
+                case 'Price':
+                    sortType = 'newPrice';
+                    break;
+            }
+            const sortA = a[sortType]; // ignore upper and lowercase
+            const sortB = b[sortType]; // ignore upper and lowercase
+            console.log(sortType);
+
+            if (sortA < sortB) {
+                return this.typeDescEsc;
+            }
+            if (sortA > sortB) {
+                return -this.typeDescEsc;
+            }
+            // names must be equal
+            return 0;
+        });
+        this.changePage(this.pageNumber);
     }
 }
 </script>
@@ -431,7 +521,7 @@ export default class Catalog extends Vue {
         .number-product-display {
             color: #b3b3b3;
         }
-        .sort-show-options {
+        .sort-paging-options {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
@@ -455,6 +545,16 @@ export default class Catalog extends Vue {
             padding: 10px 17px;
             border: 2px solid rgb(228 228 228);
             box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        }
+    }
+    .search-results-keyword {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-size: 25px;
+        .search-keyword {
+            color: rgb(255, 0, 0);
+            font-weight: 600;
         }
     }
 }

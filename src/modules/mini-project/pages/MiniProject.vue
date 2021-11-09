@@ -10,9 +10,9 @@
 </template>
 
 <script lang="ts">
+import { Options, Vue } from 'vue-class-component';
 import HeaderComp from '../components/header/Header.vue';
 import Catalog from './Catalog.vue';
-import { Options, Vue } from 'vue-class-component';
 import InformationProduct from './InformationProduct.vue';
 import ShoppingCart from './ShoppingCart.vue';
 

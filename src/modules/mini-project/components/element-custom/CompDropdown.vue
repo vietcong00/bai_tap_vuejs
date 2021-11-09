@@ -5,7 +5,7 @@
         </div>
         <el-dropdown>
             <div class="el-dropdown-link">
-                <b>{{ options[0] }}</b>
+                <b>{{ selected }}</b>
                 <i
                     class="el-icon-arrow-down el-icon--right"
                     style="margin-left: 10px"
@@ -13,18 +13,23 @@
             </div>
             <template #dropdown>
                 <el-dropdown-menu>
-                    <el-dropdown-item v-for="(item, index) in options" :key="index">{{
-                        item
-                    }}</el-dropdown-item>
+                    <el-dropdown-item
+                        v-for="(item, index) in options"
+                        :key="index"
+                        @click="selectText(item)"
+                        >{{ item }}</el-dropdown-item
+                    >
                 </el-dropdown-menu>
             </template>
         </el-dropdown>
     </div>
 </template>
 
-<script>
-export default {
-    name: 'Comp-dropdown',
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
+
+@Options({
+    name: 'comp-dropdown',
     props: {
         nameElement: {
             type: String,
@@ -33,7 +38,16 @@ export default {
             type: Array,
         },
     },
-};
+})
+export default class CompDropdown extends Vue {
+    options!: Array<string>;
+    selected = this.options[0];
+
+    selectText(item: string) {
+        this.selected = item;
+        this.$emit('selectText', item);
+    }
+}
 </script>
 
 <style scoped>

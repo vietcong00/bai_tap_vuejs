@@ -16,6 +16,7 @@
         </div>
     </div>
 </template>
+
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import IconComponent from '../components/CompIcon.vue';

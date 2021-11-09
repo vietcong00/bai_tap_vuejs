@@ -28,6 +28,11 @@ export default class SelectColor extends Vue {
     colorSelected = this.colorSelectedProp;
 
     selectColor(color: string) {
+        if (!this.colorSelectedProp) {
+            this.colorSelected = color;
+            this.$emit('selectColor', color);
+            return;
+        }
         if (this.colorSelected === color) {
             this.colorSelected = '';
         } else {

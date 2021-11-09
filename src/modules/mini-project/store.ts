@@ -1,6 +1,6 @@
 import { getModule, VuexModule, Mutation, Action, Module } from 'vuex-module-decorators';
 import store from '@/store';
-import { IProduct, ICartItem, IFilterChosenList } from './types';
+import { IProduct, ICartItem, IFilterChosenList, ITextItem } from './types';
 
 // import { exampleService } from './services/api.service';
 
@@ -24,6 +24,10 @@ class ProductStore extends VuexModule {
             number: 0,
         },
     };
+
+    filterTagNameList: Array<ITextItem> = [];
+    productListPaging: Array<IProduct> = [];
+    productListFilter: Array<IProduct> = [];
 
     productList: Array<IProduct> = [
         {
@@ -324,6 +328,14 @@ class ProductStore extends VuexModule {
 
     cartInfo = new Set();
 
+    get getProductListPaging() {
+        return this.productListPaging;
+    }
+
+    get getProductListFilter() {
+        return this.productListPaging;
+    }
+
     get getProductList() {
         return this.productList;
     }
@@ -338,6 +350,10 @@ class ProductStore extends VuexModule {
 
     get getFilterChosenList() {
         return this.filterChosenList;
+    }
+
+    get getFilterTagNameList() {
+        return this.filterTagNameList;
     }
 
     @Mutation
@@ -377,8 +393,23 @@ class ProductStore extends VuexModule {
     }
 
     @Mutation
-    UPDATE_FILTER_CHOSEN_LIST(data: IFilterChosenList) {
-        this.filterChosenList = data;
+    UPDATE_PRODUCT_LIST_PAGING(products: Array<IProduct>) {
+        this.productListPaging = products;
+    }
+
+    @Mutation
+    UPDATE_PRODUCT_LIST_FILTER(products: Array<IProduct>) {
+        this.productListFilter = products;
+    }
+
+    @Mutation
+    UPDATE_FILTER_TAG_NAME_LIST(tags: Array<ITextItem>) {
+        this.filterTagNameList = tags;
+    }
+
+    @Mutation
+    UPDATE_FILTER_CHOSEN_LIST(filters: IFilterChosenList) {
+        this.filterChosenList = filters;
     }
 
     @Action
@@ -421,8 +452,23 @@ class ProductStore extends VuexModule {
     }
 
     @Action
-    updateFilterChosenList(data: IFilterChosenList) {
-        this.UPDATE_FILTER_CHOSEN_LIST(data);
+    updateProductListPaging(products: Array<IProduct>) {
+        this.UPDATE_PRODUCT_LIST_PAGING(products);
+    }
+
+    @Action
+    updateProductListFilter(products: Array<IProduct>) {
+        this.UPDATE_PRODUCT_LIST_FILTER(products);
+    }
+
+    @Action
+    updateFilterTagNameList(tags: Array<ITextItem>) {
+        this.UPDATE_FILTER_TAG_NAME_LIST(tags);
+    }
+
+    @Action
+    updateFilterChosenList(filters: IFilterChosenList) {
+        this.UPDATE_FILTER_CHOSEN_LIST(filters);
     }
 }
 

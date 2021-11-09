@@ -31,6 +31,11 @@ export default class SelectColor extends Vue {
     textSelected = this.textSelectedProp;
 
     selectText(textItem: ITextItem) {
+        if (!this.textSelectedProp) {
+            this.textSelected = textItem.name;
+            this.$emit('selectText', textItem);
+            return;
+        }
         if (this.textSelected === textItem.name) {
             this.textSelected = '';
         } else {

@@ -68,7 +68,7 @@ export const PAGINATION_OPTIONS = [
     { name: '20 per page', value: 20 },
 ];
 
-export const SORT_OPTIONS = ['Position', 'Price', 'Name', 'Rate'];
+export const SORT_OPTIONS = ['Price', 'Name', 'Rate'];
 
 export const TEXT_ITEM_DEFAULT = {
     name: '',
@@ -87,3 +87,28 @@ export const FILTER_CHOSEN_LIST_DEFAULT = {
     price: { ...FILTER_CHOSEN_PRICE_DEFAULT },
     color: { ...TEXT_ITEM_DEFAULT },
 };
+
+export const PAGE_SIZE_DEFAULT = 2;
+
+export const LIST_COUNTRY = [
+    {
+        value: 'Viet Nam',
+        label: 'Viet Nam',
+    },
+    {
+        value: 'USA',
+        label: 'USA',
+    },
+    {
+        value: 'Japan',
+        label: 'Japan',
+    },
+    {
+        value: 'Korea',
+        label: 'Korea',
+    },
+    {
+        value: 'China',
+        label: 'China',
+    },
+];

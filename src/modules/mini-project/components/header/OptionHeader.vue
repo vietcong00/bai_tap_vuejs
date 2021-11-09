@@ -44,8 +44,8 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import CompIcon from '../CompIcon.vue';
 import { productStore } from '../../store';
+import CompIcon from '../CompIcon.vue';
 
 @Options({
     name: 'option-header',

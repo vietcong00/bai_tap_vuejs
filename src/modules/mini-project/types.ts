@@ -32,3 +32,5 @@ export interface ITextItem {
 export interface IFilterChosenList {
     [key: string]: any;
 }
+
+export type SortType = 'id' | 'Name' | 'name' | 'Rate' | 'rate' | 'Price' | 'newPrice';
