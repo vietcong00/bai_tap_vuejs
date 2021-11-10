@@ -29,3 +29,13 @@
         }
     }
 }
+
+.filter-column{
+    .el-collapse-item__header {
+        font-weight: bold;
+        background-color: #f5f7ff;
+    }
+    .el-collapse-item__content {
+        background-color: #f5f7ff;
+    }
+}

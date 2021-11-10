@@ -6,8 +6,9 @@ import ShoppingCart from './pages/ShoppingCart.vue';
 
 export default [
     {
-        path: '/mini-project',
+        path: '/mini-project/',
         name: 'mini-project',
+        redirect: '/mini-project/catalog',
         component: MiniProject,
         meta: {
             public: true,

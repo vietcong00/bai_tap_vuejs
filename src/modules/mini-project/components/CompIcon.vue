@@ -122,7 +122,7 @@
                 />
             </svg>
         </div>
-        <!--  icon -->
+        <!--  cart-icon -->
         <div class="icon-customer" v-if="IconChosen === 'cart-icon'">
             <svg
                 width="19"
@@ -255,7 +255,7 @@
                 />
             </svg>
         </div>
-        <!--  icon -->
+        <!--  cart-header-icon -->
         <div class="icon-customer" v-if="IconChosen === 'cart-header-icon'">
             <svg
                 width="19"
@@ -273,8 +273,8 @@
         <!--  grid-icon -->
         <div class="icon-customer" v-if="IconChosen === 'grid-icon'">
             <svg
-                height="32px"
-                width="32px"
+                height="24px"
+                width="24px"
                 fill="#000000"
                 xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -299,12 +299,11 @@
         <!--  list icon -->
         <div class="icon-customer" v-if="IconChosen === 'list-icon'">
             <svg
-                width="32"
-                height="32"
+                width="28"
+                height="28"
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
                 viewBox="0 0 20 20"
-                fill="currentColor"
+                fill="#000000"
             >
                 <path
                     fill-rule="evenodd"

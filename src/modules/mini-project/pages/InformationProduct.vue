@@ -20,8 +20,14 @@
                             On Sale from
                             <b>{{ formatCurrency(productDetail.newPrice) }}</b>
                         </div>
-                        <comp-input-number :quantity="quantity" />
-
+                        <el-input-number
+                            class="comp-input-number"
+                            v-model="quantity"
+                            :min="1"
+                            :max="10"
+                            controls-position="right"
+                            @change="handleChange"
+                        />
                         <button class="add-cart-btn" @click="addToCart">
                             Add to Cart
                         </button>
@@ -117,7 +123,6 @@ import { ICartItem } from '../types';
 import IconComponent from '../components/CompIcon.vue';
 import SelectColor from '../components/CompSelectColor.vue';
 import ProductParameterTable from '../components/ProductParameterTable.vue';
-import CompInputNumber from '../components/element-custom/CompInputNumber.vue';
 import ProductImageCarousel from '../components/ProductImageCarousel.vue';
 
 @Options({
@@ -126,7 +131,6 @@ import ProductImageCarousel from '../components/ProductImageCarousel.vue';
         IconComponent,
         SelectColor,
         ProductParameterTable,
-        CompInputNumber,
         ProductImageCarousel,
     },
     methods: {
@@ -165,27 +169,10 @@ export default class CardProductCart extends Vue {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .header-information-product {
     padding: 20px 0;
     border-bottom: 1px solid #cacdd8;
-    .el-tabs {
-        .el-tabs__item {
-            height: 22px;
-            margin-top: 9px;
-            color: #666666;
-            font-size: 14px;
-            font-weight: 600;
-            line-height: 21px;
-        }
-
-        .el-tabs__nav-wrap::after {
-            width: 0;
-        }
-        .is-active {
-            color: #000;
-        }
-    }
     .price-cart-product {
         display: flex;
         flex-wrap: wrap;

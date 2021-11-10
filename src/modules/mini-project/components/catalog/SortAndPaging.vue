@@ -23,9 +23,9 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { PAGINATION_OPTIONS, SORT_OPTIONS, PAGE_SIZE_DEFAULT } from '../../contants';
+import { PAGINATION_OPTIONS, SORT_OPTIONS, CURRENT_PAGE_DEFAULT } from '../../contants';
 import { productStore } from '../../store';
-import CompDropdown from '../element-custom/CompDropdown.vue';
+import CompDropdown from '../CompDropdown.vue';
 import { SortType } from '../../types';
 
 @Options({
@@ -36,23 +36,17 @@ import { SortType } from '../../types';
     },
 })
 export default class SortAndPaging extends Vue {
-    productList = this.getProductListStore;
     sortOptions = SORT_OPTIONS;
     paginationOptions = PAGINATION_OPTIONS;
 
-    sortType = '';
-
-    pageSize = PAGE_SIZE_DEFAULT;
-    pageNumber = 1;
-    numberProductInPageStart = 1;
-    numberProductInPageEnd = 1;
-    numberProductTotal = this.productList.length;
+    sortType = this.sortOptions[0];
     typeDescEsc = 1;
 
-    get getProductListStore() {
-        return productStore.getProductList;
+    get getProductListFilter() {
+        return productStore.getProductListFilter;
     }
 
+    // Get list name of pagination Option
     get getPaginationOptionsName() {
         const nameList: Array<string> = [];
         this.paginationOptions.forEach((element) => {
@@ -61,43 +55,27 @@ export default class SortAndPaging extends Vue {
         return nameList;
     }
 
-    get getNumberTotalProduct() {
-        return this.productList.length;
-    }
-
-    pagingProduct(pageSize: number | string) {
-        if (typeof pageSize === 'number') {
-            this.pageSize = pageSize;
+    // Pagination list product
+    pagingProduct(data: number | string) {
+        let pageSize = 0;
+        if (typeof data === 'number') {
+            pageSize = data;
         } else {
             const value = this.paginationOptions.find((element) => {
-                return element.name === pageSize;
+                return element.name === data;
             })?.value;
             if (value) {
-                this.pageSize = value;
+                pageSize = value;
             }
         }
-        this.changePage(this.pageNumber);
+        productStore.updatePageSize(pageSize);
     }
 
-    changePage(e: number) {
-        this.pageNumber = e;
-        this.numberProductInPageStart = (this.pageNumber - 1) * this.pageSize + 1;
-        this.numberProductInPageStart =
-            this.numberProductInPageStart > this.productList.length
-                ? this.productList.length
-                : this.numberProductInPageStart;
-        this.numberProductInPageEnd = this.numberProductInPageStart + this.pageSize - 1;
-        this.numberProductInPageEnd =
-            this.numberProductInPageEnd > this.productList.length
-                ? this.productList.length
-                : this.numberProductInPageEnd;
-        const start = (this.pageNumber - 1) * this.pageSize;
-        this.$emit('changePage', this.productList.slice(start, start + this.pageSize));
-    }
-
+    // Sort product by Type
     sortingProduct(sortType: SortType) {
         this.typeDescEsc = -this.typeDescEsc;
-        this.productList.sort((a, b) => {
+        const productList = this.getProductListFilter;
+        productList.sort((a, b) => {
             switch (sortType) {
                 case 'Name':
                     sortType = 'name';
@@ -111,120 +89,35 @@ export default class SortAndPaging extends Vue {
             }
             const sortA = a[sortType]; // ignore upper and lowercase
             const sortB = b[sortType]; // ignore upper and lowercase
-            console.log(sortType);
-
             if (sortA < sortB) {
                 return this.typeDescEsc;
             }
             if (sortA > sortB) {
                 return -this.typeDescEsc;
             }
-            // names must be equal
             return 0;
         });
-        this.$emit('sort', this.productList);
-        this.changePage(this.pageNumber);
+        productStore.updateProductListFilter(productList);
+        productStore.changePage(CURRENT_PAGE_DEFAULT);
+    }
+
+    mounted() {
+        this.sortingProduct('Price');
     }
 }
 </script>
 
-<style lang="scss">
-.image-banner {
-    width: -webkit-fill-available;
-    margin: 0 0 19px 0;
-}
-.name-seris-product {
-    box-sizing: content-box;
-    padding-left: 0;
-    margin: 19px 0 30px 0;
-    font-size: 32px;
-}
-
-.el-aside {
-    padding: 0 16px 0 16px;
-    background-color: #f5f7ff;
-    .filter-column {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        .filter-btn {
-            width: 100%;
-            margin-bottom: 10px;
-            border: 1px solid #a2a6b0;
-            border-radius: 20px;
-            color: #a2a6b0;
-            font-size: 14px;
-            font-weight: 600;
-            padding: 10px 0;
-            background-color: #f5f7ff;
-            box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-        }
-        .filter-btn-active {
-            background-color: #0156ff;
-            color: #fff;
-            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-        }
-
-        .el-collapse-item__header {
-            font-weight: bold;
-            background-color: #f5f7ff;
-        }
-        .el-collapse-item__content {
-            background-color: #f5f7ff;
-        }
-    }
-}
-.el-header {
-    height: auto !important;
-    .header-optiops-filter {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        .number-product-display {
-            color: #b3b3b3;
-        }
-        .sort-paging-options {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            .component-dropdown {
-                margin-right: 11px;
-            }
-            .type-show-icon {
-                margin-left: 9px;
-            }
-        }
-    }
-    .filter-product-tags {
-        display: flex;
-        flex-wrap: wrap;
-        margin-top: 5px;
-        .filter-tag-btn {
-            cursor: pointer;
-        }
-        .clear-filter-tag-btn {
-            padding: 10px 17px;
-            border: 2px solid rgb(228 228 228);
-            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-        }
-    }
-    .search-results-keyword {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        font-size: 25px;
-        .search-keyword {
-            color: rgb(255, 0, 0);
-            font-weight: 600;
-        }
-    }
-}
-// el-footer
-.pagination-product-filter {
+<style lang="scss" scoped>
+.sort-paging-options {
     display: flex;
-    justify-content: center;
-    margin: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    .component-dropdown {
+        margin-right: 11px;
+    }
+    .type-show-icon {
+        margin-left: 9px;
+    }
 }
 </style>

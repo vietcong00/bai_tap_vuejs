@@ -50,7 +50,7 @@ export default class CompDropdown extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .component-dropdown {
     display: flex;
     flex-wrap: wrap;

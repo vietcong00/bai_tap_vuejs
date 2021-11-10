@@ -1,0 +1,11 @@
+.el-input-number {
+  width: 70px !important;
+  span {
+      width: 15px;
+  }
+  .el-input {
+      .el-input__inner {
+          padding-right: 30px !important;
+      }
+  }
+}

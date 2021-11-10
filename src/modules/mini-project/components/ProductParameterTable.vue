@@ -20,4 +20,4 @@ import { Options, Vue } from 'vue-class-component';
 })
 export default class ProductParameterTable extends Vue {}
 </script>
-<style lang="scss"></style>
+<style lang="scss" scoped></style>

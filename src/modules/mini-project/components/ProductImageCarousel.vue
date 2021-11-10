@@ -32,25 +32,4 @@ import IconComponent from '../components/CompIcon.vue';
 })
 export default class ProductImageCarousel extends Vue {}
 </script>
-<style lang="scss">
-.product-image-carousel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    .logo-producer {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        font-size: 12px;
-        font-weight: 300;
-        .learn-more {
-            height: -webkit-fill-available;
-            width: 170px;
-            margin-left: 10px;
-            padding-left: 10px;
-            border-left: 2px solid #00aeb8;
-        }
-    }
-}
-</style>
+<style lang="scss" scoped></style>

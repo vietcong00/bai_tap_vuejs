@@ -23,7 +23,14 @@
                 </el-table-column>
                 <el-table-column label="Qty" width="100">
                     <template #default="scope">
-                        <comp-input-number :quantity="scope.row.quantity" />
+                        <el-input-number
+                            class="comp-input-number"
+                            v-model="scope.row.quantity"
+                            :min="1"
+                            :max="10"
+                            controls-position="right"
+                            @change="handleChange"
+                        />
                     </template>
                 </el-table-column>
                 <el-table-column prop="subtotal" label="Subtotal" width="120">
@@ -72,13 +79,11 @@ import { Options, Vue } from 'vue-class-component';
 import { productStore } from '../../store';
 import { IProduct } from '../../types';
 import { formatCurrency } from '../../util';
-import CompInputNumber from '../../components/element-custom/CompInputNumber.vue';
 import CompIcon from '../CompIcon.vue';
 
 @Options({
     name: 'cart-product-table',
     components: {
-        CompInputNumber,
         CompIcon,
     },
     methods: {
@@ -93,6 +98,7 @@ export default class CartProductTable extends Vue {
         productStore.clearCart();
     }
 
+    // Remove product chosen in cart
     deleteProductCart(id: string) {
         this.listProduct.splice(this.listProduct.indexOf(productStore.getProductList[0]));
         productStore.deleteCart(id);

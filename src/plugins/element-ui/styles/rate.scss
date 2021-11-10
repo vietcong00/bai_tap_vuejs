@@ -15,3 +15,20 @@
         color: #a2a6b0; margin: -4px 0 0 8px
     }
 }
+
+.product-rate{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    padding: 0 2%;
+    .el-rate__icon {
+        margin-right: 2px;
+        font-size: 18px;
+    }
+    .review-text{
+        color: #a2a6b0;
+        margin: 0px 0px 0px 8px;
+    }
+}

@@ -1,6 +1,7 @@
 import { getModule, VuexModule, Mutation, Action, Module } from 'vuex-module-decorators';
 import store from '@/store';
-import { IProduct, ICartItem, IFilterChosenList, ITextItem } from './types';
+import { IProduct, ICartItem, IFilterChosenList, ITextItem, IPagingItem } from './types';
+import { TEXT_ITEM_DEFAULT, PAGE_SIZE_DEFAULT, CURRENT_PAGE_DEFAULT } from './contants';
 
 // import { exampleService } from './services/api.service';
 
@@ -8,6 +9,7 @@ import { IProduct, ICartItem, IFilterChosenList, ITextItem } from './types';
 class ProductStore extends VuexModule {
     count = 0;
     inputSearchHeader = '';
+    numberFilter = 0;
     filterChosenList: IFilterChosenList = {
         category: {
             name: '',
@@ -328,12 +330,27 @@ class ProductStore extends VuexModule {
 
     cartInfo = new Set();
 
+    pageSize = PAGE_SIZE_DEFAULT;
+    infoPaging: IPagingItem = {
+        start: 0,
+        end: 0,
+        currentPage: PAGE_SIZE_DEFAULT,
+    };
+
+    get getPageSize() {
+        return this.pageSize;
+    }
+
+    get getInfoPaging() {
+        return this.infoPaging;
+    }
+
     get getProductListPaging() {
         return this.productListPaging;
     }
 
     get getProductListFilter() {
-        return this.productListPaging;
+        return this.productListFilter;
     }
 
     get getProductList() {
@@ -356,14 +373,18 @@ class ProductStore extends VuexModule {
         return this.filterTagNameList;
     }
 
-    @Mutation
-    INCREMENT() {
-        this.count++;
+    get getNumberFilter() {
+        return this.numberFilter;
     }
 
     @Mutation
-    DECREMENT() {
-        this.count--;
+    UPDATE_INFO_PAGING(info: IPagingItem) {
+        this.infoPaging = info;
+    }
+
+    @Mutation
+    UPDATE_PAGESIZE(pageSize: number) {
+        this.pageSize = pageSize;
     }
 
     @Mutation
@@ -412,23 +433,9 @@ class ProductStore extends VuexModule {
         this.filterChosenList = filters;
     }
 
-    @Action
-    incrementAfterTime(payload: number) {
-        const delay = payload;
-
-        return new Promise<void>((resolve) => {
-            window.setTimeout(() => {
-                this.INCREMENT();
-                resolve();
-            }, delay);
-        });
-    }
-
-    @Action
-    getUser() {
-        // exampleService.getList({}).then((response) => {
-        //     console.log('reponse', response);
-        // });
+    @Mutation
+    CHANGE_NUMBER_FILTER(number: number) {
+        this.numberFilter += number;
     }
 
     @Action
@@ -447,16 +454,6 @@ class ProductStore extends VuexModule {
     }
 
     @Action
-    changeInputSearch(input: string) {
-        this.CHANGE_INPUT_SEARCH(input);
-    }
-
-    @Action
-    updateProductListPaging(products: Array<IProduct>) {
-        this.UPDATE_PRODUCT_LIST_PAGING(products);
-    }
-
-    @Action
     updateProductListFilter(products: Array<IProduct>) {
         this.UPDATE_PRODUCT_LIST_FILTER(products);
     }
@@ -469,6 +466,105 @@ class ProductStore extends VuexModule {
     @Action
     updateFilterChosenList(filters: IFilterChosenList) {
         this.UPDATE_FILTER_CHOSEN_LIST(filters);
+    }
+
+    @Action
+    changeNumberFilter(number: number) {
+        this.CHANGE_NUMBER_FILTER(number);
+    }
+
+    @Action
+    filter() {
+        const productListFilter = this.getProductList.filter((product) => {
+            if (
+                this.filterChosenList.category.name !== '' &&
+                product.category !== this.filterChosenList.category.name
+            ) {
+                return false;
+            }
+            if (
+                this.filterChosenList.color.name !== '' &&
+                product.colors.indexOf(this.filterChosenList.color.name) < 0
+            ) {
+                return false;
+            }
+            if (
+                this.filterChosenList.price.name !== '' &&
+                (product.newPrice <= this.filterChosenList.price.minPrice ||
+                    product.newPrice >= this.filterChosenList.price.maxPrice)
+            ) {
+                return false;
+            }
+            return true;
+        });
+
+        this.UPDATE_PRODUCT_LIST_FILTER(productListFilter);
+        this.changePage(CURRENT_PAGE_DEFAULT);
+        this.CHANGE_INPUT_SEARCH('');
+    }
+
+    @Action
+    deleteFilterTagName(tagIndex: { tagName: string; index: number }): void {
+        const tagNames = this.filterTagNameList;
+        tagNames.splice(tagIndex.index, 1);
+        this.UPDATE_FILTER_TAG_NAME_LIST(tagNames);
+        const filterChosenList = this.getFilterChosenList;
+        for (const key in filterChosenList) {
+            if (filterChosenList[key].name === tagIndex.tagName) {
+                filterChosenList[key] = TEXT_ITEM_DEFAULT;
+                break;
+            }
+        }
+        this.UPDATE_FILTER_CHOSEN_LIST(filterChosenList);
+        this.filter();
+    }
+
+    @Action
+    searchProduct(inputSearch: string) {
+        this.CHANGE_INPUT_SEARCH(inputSearch);
+        const productListFilter: Array<IProduct> = [];
+        this.productList.forEach((element) => {
+            if (element.name.toLowerCase().indexOf(inputSearch.toLowerCase()) >= 0) {
+                productListFilter.push(element);
+            }
+        });
+        this.UPDATE_PRODUCT_LIST_FILTER(productListFilter);
+        this.changePage(CURRENT_PAGE_DEFAULT);
+    }
+
+    @Action
+    updatePageSize(pageSize: number) {
+        this.UPDATE_PAGESIZE(pageSize);
+        this.changePage(CURRENT_PAGE_DEFAULT);
+    }
+
+    @Action
+    changePage(currentPage: number) {
+        const sizeList = this.getProductListFilter.length;
+        let numberProductInPageStart = (currentPage - 1) * this.pageSize + 1;
+        numberProductInPageStart =
+            numberProductInPageStart > sizeList ? sizeList : numberProductInPageStart;
+        let numberProductInPageEnd = numberProductInPageStart + this.pageSize - 1;
+        numberProductInPageEnd =
+            numberProductInPageEnd > sizeList ? sizeList : numberProductInPageEnd;
+        this.UPDATE_INFO_PAGING({
+            start: numberProductInPageStart,
+            end: numberProductInPageEnd,
+            currentPage: currentPage,
+        });
+        this.updateProductListPaging({
+            start: this.infoPaging.start - 1,
+            end: this.infoPaging.end,
+        });
+    }
+
+    @Action
+    updateProductListPaging(payload: { start: number; end: number }) {
+        const productListPaging = this.productListFilter.slice(
+            payload.start,
+            payload.end,
+        );
+        this.UPDATE_PRODUCT_LIST_PAGING(productListPaging);
     }
 }
 

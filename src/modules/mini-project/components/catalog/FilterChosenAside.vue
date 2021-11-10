@@ -17,14 +17,14 @@
                         <comp-select-text
                             :listText="listItemCategoryFilter"
                             @selectText="chosenCategory"
-                            :textSelectedProp="filterChosenList.category.name"
+                            :textSelectedProp="getFilterChosenList.category.name"
                         />
                     </el-collapse-item>
                     <el-collapse-item title="Price" name="Price">
                         <comp-select-text
                             :listText="listItemPriceFilter"
                             @selectText="chosenPrice"
-                            :textSelectedProp="filterChosenList.price.name"
+                            :textSelectedProp="getFilterChosenList.price.name"
                         />
                     </el-collapse-item>
                     <el-collapse-item title="Color" name="Color">
@@ -32,7 +32,7 @@
                         <comp-select-color
                             :listColor="setColorFilter"
                             @selectColor="chosenColor"
-                            :colorSelectedProp="filterChosenList.color.name"
+                            :colorSelectedProp="getFilterChosenList.color.name"
                         />
                     </el-collapse-item>
                     <el-collapse-item title="Filter Name" name="Filter Name">
@@ -57,83 +57,54 @@ import { Options, Vue } from 'vue-class-component';
 import { productStore } from '../../store';
 import {
     FILTER_PRICE_OPTION,
-    PAGINATION_OPTIONS,
-    SORT_OPTIONS,
     TEXT_ITEM_DEFAULT,
     FILTER_CHOSEN_LIST_DEFAULT,
     FILTER_CHOSEN_PRICE_DEFAULT,
-    PAGE_SIZE_DEFAULT,
+    COLLAPSE_ACTIVES,
 } from '../../contants';
 import { ITextItem, IFilterChosenList } from '../../types';
-import CompDropdown from '../element-custom/CompDropdown.vue';
-import FilterTag from '../catalog/FilterTag.vue';
-import ProductCardCatalog from '../ProductCardCatalog.vue';
 import CompIcon from '../CompIcon.vue';
 import CompSelectColor from '../CompSelectColor.vue';
 import CompSelectText from '../CompSelectText.vue';
-import SortAndPaging from '../catalog/SortAndPaging.vue';
 
 @Options({
-    name: 'catalog',
+    name: 'filter-chosen-aside',
     components: {
-        CompDropdown,
-        FilterTag,
-        ProductCardCatalog,
         CompIcon,
         CompSelectColor,
         CompSelectText,
-        SortAndPaging,
     },
 })
-export default class Catalog extends Vue {
+export default class FilterChosenAside extends Vue {
     listItemPriceFilter = FILTER_PRICE_OPTION;
-    sortOptions = SORT_OPTIONS;
-    paginationOptions = PAGINATION_OPTIONS;
     filterChosenList: IFilterChosenList = { ...FILTER_CHOSEN_LIST_DEFAULT };
-
-    collapseActives = ['Category', 'Price', 'Color', 'Filter Name'];
-    sortType = 'Positon';
-    isFilterBtnActive = false;
-    productList = this.getProductListStore;
-    productListPaging = this.getProductListStore;
-    filterTagNameList = this.getFilterTagNameList;
+    collapseActives = COLLAPSE_ACTIVES;
 
     listItemCategoryFilter: Array<ITextItem> = [];
     ListItemColorFilter: Array<ITextItem> = [];
     setColorFilter = new Set();
     numberFilter = 0;
-    pageSize = PAGE_SIZE_DEFAULT;
-    pageNumber = 1;
-    numberProductInPageStart = 1;
-    numberProductInPageEnd = 1;
-    numberProductTotal = this.productList.length;
-    typeDescEsc = 1;
 
     get getProductListStore() {
         return productStore.getProductList;
     }
 
+    get getProductListFilter() {
+        return productStore.getProductListFilter;
+    }
+
     get getFilterTagNameList() {
+        this.filter();
         return productStore.getFilterTagNameList;
     }
 
-    get getInputSearch() {
-        const textSearch = productStore.getInputSearch;
-        if (textSearch) {
-            this.productList = [];
-            this.getProductListStore.forEach((element) => {
-                if (element.name.toLowerCase().indexOf(textSearch.toLowerCase()) >= 0) {
-                    this.productList.push(element);
-                }
-            });
-        }
-        return textSearch;
+    get getFilterChosenList() {
+        this.filterChosenList = productStore.getFilterChosenList;
+
+        return this.filterChosenList;
     }
 
-    get getNumberTotalProduct() {
-        return this.productList.length;
-    }
-
+    // Click chosen category
     chosenCategory(item: ITextItem) {
         let categoryFilter = this.filterChosenList.category;
         if (!categoryFilter.name) {
@@ -148,6 +119,7 @@ export default class Catalog extends Vue {
         this.filterChosenList.category = categoryFilter;
     }
 
+    // Click chosen Price
     chosenPrice(item: ITextItem) {
         let price = this.filterChosenList.price;
         if (!price.name) {
@@ -162,6 +134,7 @@ export default class Catalog extends Vue {
         this.filterChosenList.price = price;
     }
 
+    // Click chosen color
     chosenColor(color: string) {
         let colorFilter = this.filterChosenList.color;
         let item: ITextItem = TEXT_ITEM_DEFAULT;
@@ -183,64 +156,23 @@ export default class Catalog extends Vue {
         this.filterChosenList.color = colorFilter;
     }
 
+    // Create filte tagname list in header of content
     createFilterTagList() {
-        this.filterTagNameList = [];
+        const filterTagNameList: Array<ITextItem> = [];
         for (const key in this.filterChosenList) {
             if (this.filterChosenList[key].name) {
-                this.filterTagNameList.push({
+                filterTagNameList.push({
                     name: this.filterChosenList[key].name,
                     number: this.filterChosenList[key].number,
                 });
             }
         }
-        productStore.updateFilterTagNameList(this.filterTagNameList);
-    }
-
-    clearFilterTagList(): void {
-        this.filterTagNameList = [];
-        this.productList = this.getProductListStore;
-        this.clearFilterChosenList();
-        productStore.updateFilterTagNameList(this.filterTagNameList);
-    }
-
-    handleDeleteFilterTag(tagName: string, index: number): void {
-        this.numberFilter--;
-        this.filterTagNameList.splice(index);
-        for (const key in this.filterChosenList) {
-            if (this.filterChosenList[key].name === tagName) {
-                this.filterChosenList[key].name = '';
-                break;
-            }
-        }
-        productStore.updateFilterTagNameList(this.filterTagNameList);
-        this.filter();
+        productStore.updateFilterTagNameList(filterTagNameList);
     }
 
     filter() {
         this.createFilterTagList();
-        this.productList = this.getProductListStore.filter((product) => {
-            if (
-                this.filterChosenList.category.name !== '' &&
-                product.category !== this.filterChosenList.category.name
-            ) {
-                return false;
-            }
-            if (
-                this.filterChosenList.color.name !== '' &&
-                product.colors.indexOf(this.filterChosenList.color.name) < 0
-            ) {
-                return false;
-            }
-            if (
-                this.filterChosenList.price.name !== '' &&
-                (product.newPrice <= this.filterChosenList.price.minPrice ||
-                    product.newPrice >= this.filterChosenList.price.maxPrice)
-            ) {
-                return false;
-            }
-            return true;
-        });
-        productStore.updateProductListFilter(this.productList);
+        productStore.filter();
     }
 
     clearFilterChosenList(): void {
@@ -250,8 +182,9 @@ export default class Catalog extends Vue {
     }
 
     mounted() {
-        // create list option filter
-        this.productList.forEach((product) => {
+        // Create list option filter
+        productStore.updateProductListFilter(this.getProductListStore);
+        this.getProductListFilter.forEach((product) => {
             let found = false;
             for (const category of this.listItemCategoryFilter) {
                 if (product.category === category.name) {
@@ -297,7 +230,7 @@ export default class Catalog extends Vue {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .el-aside {
     padding: 0 16px 0 16px;
     background-color: #f5f7ff;
@@ -321,14 +254,6 @@ export default class Catalog extends Vue {
             background-color: #0156ff;
             color: #fff;
             box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-        }
-
-        .el-collapse-item__header {
-            font-weight: bold;
-            background-color: #f5f7ff;
-        }
-        .el-collapse-item__content {
-            background-color: #f5f7ff;
         }
     }
 }

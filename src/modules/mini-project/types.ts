@@ -34,3 +34,9 @@ export interface IFilterChosenList {
 }
 
 export type SortType = 'id' | 'Name' | 'name' | 'Rate' | 'rate' | 'Price' | 'newPrice';
+
+export interface IPagingItem {
+    start: number;
+    end: number;
+    currentPage: number;
+}

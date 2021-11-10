@@ -1,0 +1,18 @@
+
+.el-tabs {
+    .el-tabs__item {
+        height: 22px;
+        margin-top: 9px;
+        color: #666666;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 21px;
+    }
+
+    .el-tabs__nav-wrap::after {
+        width: 0;
+    }
+    .is-active {
+        color: #000;
+    }
+}

@@ -88,7 +88,8 @@ export const FILTER_CHOSEN_LIST_DEFAULT = {
     color: { ...TEXT_ITEM_DEFAULT },
 };
 
-export const PAGE_SIZE_DEFAULT = 2;
+export const PAGE_SIZE_DEFAULT = 10;
+export const CURRENT_PAGE_DEFAULT = 1;
 
 export const LIST_COUNTRY = [
     {
@@ -112,3 +113,5 @@ export const LIST_COUNTRY = [
         label: 'China',
     },
 ];
+
+export const COLLAPSE_ACTIVES = ['Category', 'Price', 'Color'];

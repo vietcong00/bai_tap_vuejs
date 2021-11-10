@@ -31,7 +31,7 @@
                         <el-dropdown-item
                             v-for="(item, index) in dayOfWeek"
                             :key="index"
-                            @click="changeTimeActice(item)"
+                            @click="changeTimeActive(item)"
                             >{{ item }}</el-dropdown-item
                         >
                     </el-dropdown-menu>
@@ -86,7 +86,7 @@ export default class GeneralInformation extends Vue {
         'Sunday',
     ];
 
-    changeTimeActice(day: string) {
+    changeTimeActive(day: string) {
         switch (day) {
             case 'Monday':
             case 'Tuesday':

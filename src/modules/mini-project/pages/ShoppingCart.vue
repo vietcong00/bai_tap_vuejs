@@ -33,7 +33,7 @@ import CartSummaryCheckout from '../components/shopping-cart/CartSummaryCheckout
 export default class CardProductCart extends Vue {}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .cart__header__title {
     font-weight: 600;
     font-size: 24px;
