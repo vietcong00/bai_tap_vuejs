@@ -183,6 +183,8 @@ export default class FilterChosenAside extends Vue {
 
     mounted() {
         // Create list option filter
+        console.log('mounted aside');
+
         productStore.updateProductListFilter(this.getProductListStore);
         this.getProductListFilter.forEach((product) => {
             let found = false;

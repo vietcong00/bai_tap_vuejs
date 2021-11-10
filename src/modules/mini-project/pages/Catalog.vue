@@ -141,7 +141,7 @@ export default class Catalog extends Vue {
     }
 
     created() {
-        productStore.getProducts();
+        // productStore.getProducts();
     }
 }
 </script>
