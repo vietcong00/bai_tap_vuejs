@@ -40,3 +40,7 @@ export interface IPagingItem {
     end: number;
     currentPage: number;
 }
+
+export interface IGetProducts {
+    products: Array<IProduct>;
+}

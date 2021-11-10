@@ -64,8 +64,8 @@ import {
 } from '../../contants';
 import { ITextItem, IFilterChosenList } from '../../types';
 import CompIcon from '../CompIcon.vue';
-import CompSelectColor from '../CompSelectColor.vue';
-import CompSelectText from '../CompSelectText.vue';
+import CompSelectColor from './CompSelectColor.vue';
+import CompSelectText from './CompSelectText.vue';
 
 @Options({
     name: 'filter-chosen-aside',

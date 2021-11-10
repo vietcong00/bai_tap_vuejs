@@ -4,7 +4,12 @@
             <el-table :data="listProduct">
                 <el-table-column label="Item" width="120">
                     <template #default="scope">
-                        <img :src="scope.row.imgLink" style="width: 100%" />
+                        <img
+                            :src="
+                                require(`../../../../assets/images/mini-project/${scope.row.imgLink}`)
+                            "
+                            style="width: 100%"
+                        />
                     </template>
                 </el-table-column>
                 <el-table-column prop="name" width="270" class="test">

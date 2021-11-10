@@ -25,7 +25,7 @@
 import { Options, Vue } from 'vue-class-component';
 import { PAGINATION_OPTIONS, SORT_OPTIONS, CURRENT_PAGE_DEFAULT } from '../../contants';
 import { productStore } from '../../store';
-import CompDropdown from '../CompDropdown.vue';
+import CompDropdown from './CompDropdown.vue';
 import { SortType } from '../../types';
 
 @Options({

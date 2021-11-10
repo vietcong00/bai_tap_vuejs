@@ -7,7 +7,12 @@
                         <router-link
                             :to="{ name: 'information', params: { id: product.id } }"
                         >
-                            <img :src="product.imgLink" style="width: 100%" />
+                            <img
+                                :src="
+                                    require(`../../../../assets/images/mini-project/${product.imgLink}`)
+                                "
+                                style="width: 100%"
+                            />
                         </router-link>
                         <div class="comp-rate">
                             <el-rate v-model="product.rate" disabled />
@@ -77,11 +82,11 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { productStore } from '../store';
-import { ICartItem } from '../types';
-import { formatCurrency } from '../util';
-import IconComponent from './CompIcon.vue';
-import ProductParameterTable from '../components/ProductParameterTable.vue';
+import { productStore } from '../../store';
+import { ICartItem } from '../../types';
+import { formatCurrency } from '../../util';
+import IconComponent from '../CompIcon.vue';
+import ProductParameterTable from '../ProductParameterTable.vue';
 
 @Options({
     name: 'product-card-catalog',

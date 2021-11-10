@@ -93,9 +93,9 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { productStore } from '../store';
-import { PAGINATION_OPTIONS, CURRENT_PAGE_DEFAULT } from '../contants';
-import ProductCardCatalog from '../components/ProductCardCatalog.vue';
-import ProductCardCatalogGrid from '../components/ProductCardCatalogGrid.vue';
+import { PAGINATION_OPTIONS } from '../contants';
+import ProductCardCatalog from '../components/catalog/ProductCardCatalog.vue';
+import ProductCardCatalogGrid from '../components/catalog/ProductCardCatalogGrid.vue';
 import CompIcon from '../components/CompIcon.vue';
 import SortAndPaging from '../components/catalog/SortAndPaging.vue';
 import FilterChosenAside from '../components/catalog/FilterChosenAside.vue';
@@ -140,8 +140,8 @@ export default class Catalog extends Vue {
         productStore.changePage(currentPage);
     }
 
-    mounted() {
-        productStore.changePage(CURRENT_PAGE_DEFAULT);
+    created() {
+        productStore.getProducts();
     }
 }
 </script>

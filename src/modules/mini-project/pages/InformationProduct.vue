@@ -121,7 +121,7 @@ import { productStore } from '../store';
 import { formatCurrency } from '../util';
 import { ICartItem } from '../types';
 import IconComponent from '../components/CompIcon.vue';
-import SelectColor from '../components/CompSelectColor.vue';
+import SelectColor from '../components/catalog/CompSelectColor.vue';
 import ProductParameterTable from '../components/ProductParameterTable.vue';
 import ProductImageCarousel from '../components/ProductImageCarousel.vue';
 

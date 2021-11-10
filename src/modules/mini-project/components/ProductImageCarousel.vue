@@ -3,7 +3,7 @@
         <div class="product-image-carousel">
             <el-carousel indicator-position="outside" :autoplay="false">
                 <el-carousel-item v-for="item in images" :key="item">
-                    <img :src="item" />
+                    <img :src="require(`../../../assets/images/mini-project/${item}`)" />
                     <div class="logo-producer">
                         <icon-component :iconName="'logo-producer-icon'" />
                         <div class="learn-more">

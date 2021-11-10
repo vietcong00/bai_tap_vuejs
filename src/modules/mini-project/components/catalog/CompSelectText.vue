@@ -17,7 +17,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { ITextItem } from '../types';
+import { ITextItem } from '../../types';
 
 @Options({
     name: 'comp-select-text',
