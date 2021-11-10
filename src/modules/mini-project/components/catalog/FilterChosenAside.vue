@@ -93,14 +93,14 @@ export default class FilterChosenAside extends Vue {
         return productStore.getProductListFilter;
     }
 
-    get getFilterTagNameList() {
-        this.filter();
-        return productStore.getFilterTagNameList;
-    }
-
     get getFilterChosenList() {
         this.filterChosenList = productStore.getFilterChosenList;
-
+        this.numberFilter = 0;
+        for (const key in this.filterChosenList) {
+            if (this.filterChosenList[key].name) {
+                this.numberFilter++;
+            }
+        }
         return this.filterChosenList;
     }
 
