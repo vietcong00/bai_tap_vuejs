@@ -312,5 +312,111 @@
        "quantity":1,
        "subtotal":123
     }
- ]
+ ],
+ "filterOptions": {
+   "categoryFilters":[
+      {
+         "name":"CUSTOM PCS",
+         "number":1
+      },
+      {
+         "name":"MSI ALL-IN-ONE PCS",
+         "number":1
+      },
+      {
+         "name":"HP/COMPAQ PCS",
+         "number":1
+      },
+      {
+         "name":"SKULL D5515AI",
+         "number":2
+      },
+      {
+         "name":"SKU D5515AI",
+         "number":1
+      }
+   ],
+   
+   "colorFilters": [
+      {
+         "name":"red",
+         "number":4
+      },
+      {
+         "name":"yellow",
+         "number":1
+      },
+      {
+         "name":"green",
+         "number":3
+      },
+      {
+         "name":"orange",
+         "number":1
+      },
+      {
+         "name":"blue",
+         "number":1
+      },
+      {
+         "name":"violet",
+         "number":1
+      },
+      {
+         "name":"black",
+         "number":1
+      }
+   ],
+   "priceFilters": [
+      {
+         "name":"$0.00 - $1,000.00",
+         "number":4,
+         "minPrice":0,
+         "maxPrice":1000
+      },
+      {
+         "name":"$1,000.00 - $2,000.00",
+         "number":0,
+         "minPrice":1000,
+         "maxPrice":2000
+      },
+      {
+         "name":"$2,000.00 - $3,000.00",
+         "number":0,
+         "minPrice":2000,
+         "maxPrice":3000
+      },
+      {
+         "name":"$3,000.00 - $4,000.00",
+         "number":0,
+         "minPrice":3000,
+         "maxPrice":4000
+      },
+      {
+         "name":"$4,000.00 - $5,000.00",
+         "number":0,
+         "minPrice":4000,
+         "maxPrice":5000
+      },
+      {
+         "name":"$5,000.00 - $6,000.00",
+         "number":0,
+         "minPrice":5000,
+         "maxPrice":6000
+      },
+      {
+         "name":"$6,000.00 - $7,000.00",
+         "number":0,
+         "minPrice":6000,
+         "maxPrice":7000
+      },
+      {
+         "name":"$7,000.00 And Above",
+         "number":2,
+         "minPrice":7000,
+         "maxPrice":"Infinity"
+      }
+   ]
+       
+}
  }}

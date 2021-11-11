@@ -42,7 +42,7 @@ export default class Catalog extends Vue {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .filter-product-tag {
     display: flex;
     flex-wrap: wrap;

@@ -15,14 +15,14 @@
                     <el-collapse-item title="Category" name="Category">
                         <!-- list item category filter -->
                         <comp-select-text
-                            :listText="listItemCategoryFilter"
+                            :listText="geFilterOptions.categoryFilters"
                             @selectText="chosenCategory"
                             :textSelectedProp="getFilterChosenList.category.name"
                         />
                     </el-collapse-item>
                     <el-collapse-item title="Price" name="Price">
                         <comp-select-text
-                            :listText="listItemPriceFilter"
+                            :listText="geFilterOptions.priceFilters"
                             @selectText="chosenPrice"
                             :textSelectedProp="getFilterChosenList.price.name"
                         />
@@ -30,7 +30,7 @@
                     <el-collapse-item title="Color" name="Color">
                         <!-- list item color filter -->
                         <comp-select-color
-                            :listColor="setColorFilter"
+                            :listColor="listColorFilter"
                             @selectColor="chosenColor"
                             :colorSelectedProp="getFilterChosenList.color.name"
                         />
@@ -56,7 +56,6 @@
 import { Options, Vue } from 'vue-class-component';
 import { productStore } from '../../store';
 import {
-    FILTER_PRICE_OPTION,
     TEXT_ITEM_DEFAULT,
     FILTER_CHOSEN_LIST_DEFAULT,
     FILTER_CHOSEN_PRICE_DEFAULT,
@@ -76,13 +75,9 @@ import CompSelectText from './CompSelectText.vue';
     },
 })
 export default class FilterChosenAside extends Vue {
-    listItemPriceFilter = FILTER_PRICE_OPTION;
     filterChosenList: IFilterChosenList = { ...FILTER_CHOSEN_LIST_DEFAULT };
     collapseActives = COLLAPSE_ACTIVES;
-
-    listItemCategoryFilter: Array<ITextItem> = [];
-    ListItemColorFilter: Array<ITextItem> = [];
-    setColorFilter = new Set();
+    listColorFilter: Array<string> = [];
     numberFilter = 0;
 
     get getProductListStore() {
@@ -91,6 +86,13 @@ export default class FilterChosenAside extends Vue {
 
     get getProductListFilter() {
         return productStore.getProductListFilter;
+    }
+
+    get geFilterOptions() {
+        productStore.geFilterOptions.colorFilters.forEach((color) => {
+            this.listColorFilter.push(color.name);
+        });
+        return productStore.geFilterOptions;
     }
 
     get getFilterChosenList() {
@@ -138,7 +140,7 @@ export default class FilterChosenAside extends Vue {
     chosenColor(color: string) {
         let colorFilter = this.filterChosenList.color;
         let item: ITextItem = TEXT_ITEM_DEFAULT;
-        for (const itemColor of this.ListItemColorFilter) {
+        for (const itemColor of this.geFilterOptions.colorFilters) {
             if (itemColor.name === color) {
                 item = { ...itemColor };
                 break;
@@ -179,55 +181,6 @@ export default class FilterChosenAside extends Vue {
         this.filterChosenList = { ...FILTER_CHOSEN_LIST_DEFAULT };
         this.numberFilter = 0;
         productStore.updateFilterChosenList(this.filterChosenList);
-    }
-
-    mounted() {
-        // Create list option filter
-        console.log('mounted aside');
-
-        productStore.updateProductListFilter(this.getProductListStore);
-        this.getProductListFilter.forEach((product) => {
-            let found = false;
-            for (const category of this.listItemCategoryFilter) {
-                if (product.category === category.name) {
-                    category.number++;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                this.listItemCategoryFilter.push({
-                    name: product.category,
-                    number: 1,
-                });
-            }
-
-            found = false;
-            product.colors.forEach((color) => {
-                found = false;
-                this.setColorFilter.add(color);
-                for (const el of this.ListItemColorFilter) {
-                    if (el.name === color) {
-                        el.number++;
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    this.ListItemColorFilter.push({
-                        name: color,
-                        number: 1,
-                    });
-                }
-            });
-
-            for (const price of this.listItemPriceFilter) {
-                if (product.newPrice <= price.maxPrice) {
-                    price.number++;
-                    break;
-                }
-            }
-        });
     }
 }
 </script>

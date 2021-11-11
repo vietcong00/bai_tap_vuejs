@@ -7,6 +7,7 @@ import {
     ITextItem,
     IPagingItem,
     IGetProducts,
+    IFilterOptions,
 } from './types';
 import { TEXT_ITEM_DEFAULT, PAGE_SIZE_DEFAULT, CURRENT_PAGE_DEFAULT } from './contants';
 import { exampleService } from './service/api.service';
@@ -15,9 +16,19 @@ import { exampleService } from './service/api.service';
 
 @Module({ dynamic: true, namespaced: true, store, name: 'productStore' })
 class ProductStore extends VuexModule {
-    count = 0;
     inputSearchHeader = '';
+    productList: Array<IProduct> = [];
+    productListPaging: Array<IProduct> = [];
+    productListFilter: Array<IProduct> = [];
     numberFilter = 0;
+    filterTagNameList: Array<ITextItem> = [];
+
+    filterOptions: IFilterOptions = {
+        categoryFilters: [],
+        colorFilters: [],
+        priceFilters: [],
+    };
+
     filterChosenList: IFilterChosenList = {
         category: {
             name: '',
@@ -35,280 +46,6 @@ class ProductStore extends VuexModule {
         },
     };
 
-    filterTagNameList: Array<ITextItem> = [];
-    productListPaging: Array<IProduct> = [];
-    productListFilter: Array<IProduct> = [];
-
-    productList: Array<IProduct> = [
-        {
-            id: '0',
-            imgLink: 'product1.png',
-            rate: 3.5,
-            reviews: 4,
-            category: 'CUSTOM PCS',
-            name: 'Test1 MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-            oldPrice: 499,
-            newPrice: 499,
-            statusStock: 'in stock',
-            parameter: [
-                {
-                    option: 'CPU',
-                    value: 'N/A',
-                },
-                {
-                    option: 'Featured',
-                    value: 'N/A',
-                },
-                {
-                    option: 'I/O Ports',
-                    value: 'N/A',
-                },
-            ],
-            colors: ['red', 'yellow'],
-            details: [
-                'Intel Core i7-10700F',
-                'Intel H410',
-                'WHITE',
-                'NVIDIA MSI GeForce RTX 2060 SUPER 8GB AERO ITX GDDR6',
-                'SO-DIMM 16GB (16GB x 1) DDR4 2666MHz',
-                '2 total slots (64GB Max)',
-                '512GB (1 x 512GB) M.2 NVMe PCIe GEN3x4 SSD 2TB (2.5) 5400RPM',
-                'Gaming Keyboard GK30 + Gaming Mouse GM11',
-                '3.5 HDD (0/0), 2.5 HDD/SSD(1/0), M.2 (1/0)',
-                'Intel WGI219Vethernet (10/100/1000M)',
-                'AX200 (WIFI 6)+BT5.1',
-                'PSU 330W',
-                'Fan Cooler',
-            ],
-            images: ['product0.png', 'product1.png', 'product2.png', 'product3.png'],
-            quantity: 2,
-            subtotal: 123,
-        },
-        {
-            id: '1',
-            imgLink: 'product2.png',
-            rate: 4.2,
-            reviews: 5,
-            category: 'MSI ALL-IN-ONE PCS',
-            name: 'Test2 MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-            oldPrice: 499,
-            newPrice: 499,
-            statusStock: 'out stock',
-            parameter: [
-                {
-                    option: 'CPU',
-                    value: 'N/A',
-                },
-                {
-                    option: 'Featured',
-                    value: 'N/A',
-                },
-                {
-                    option: 'I/O Ports',
-                    value: 'N/A',
-                },
-            ],
-            colors: ['green', 'orange'],
-            details: [
-                'Intel Core i7-10700F',
-                'Intel H410',
-                'WHITE',
-                'NVIDIA MSI GeForce RTX 2060 SUPER 8GB AERO ITX GDDR6',
-                'SO-DIMM 16GB (16GB x 1) DDR4 2666MHz',
-                '2 total slots (64GB Max)',
-                '512GB (1 x 512GB) M.2 NVMe PCIe GEN3x4 SSD 2TB (2.5) 5400RPM',
-                'Gaming Keyboard GK30 + Gaming Mouse GM11',
-                '3.5 HDD (0/0), 2.5 HDD/SSD(1/0), M.2 (1/0)',
-                'Intel WGI219Vethernet (10/100/1000M)',
-                'AX200 (WIFI 6)+BT5.1',
-                'PSU 330W',
-                'Fan Cooler',
-            ],
-            images: ['product0.png', 'product1.png', 'product2.png', 'product3.png'],
-            quantity: 1,
-            subtotal: 123,
-        },
-        {
-            id: '2',
-            imgLink: 'product3.png',
-            rate: 2.3,
-            reviews: 7,
-            category: 'HP/COMPAQ PCS',
-            name: 'Test3 MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-            oldPrice: 499,
-            newPrice: 9999999,
-            statusStock: 'in stock',
-            parameter: [
-                {
-                    option: 'CPU',
-                    value: 'N/A',
-                },
-                {
-                    option: 'Featured',
-                    value: 'N/A',
-                },
-                {
-                    option: 'I/O Ports',
-                    value: 'N/A',
-                },
-            ],
-            colors: ['green', 'blue'],
-            details: [
-                'Intel Core i7-10700F',
-                'Intel H410',
-                'WHITE',
-                'NVIDIA MSI GeForce RTX 2060 SUPER 8GB AERO ITX GDDR6',
-                'SO-DIMM 16GB (16GB x 1) DDR4 2666MHz',
-                '2 total slots (64GB Max)',
-                '512GB (1 x 512GB) M.2 NVMe PCIe GEN3x4 SSD 2TB (2.5) 5400RPM',
-                'Gaming Keyboard GK30 + Gaming Mouse GM11',
-                '3.5 HDD (0/0), 2.5 HDD/SSD(1/0), M.2 (1/0)',
-                'Intel WGI219Vethernet (10/100/1000M)',
-                'AX200 (WIFI 6)+BT5.1',
-                'PSU 330W',
-                'Fan Cooler',
-            ],
-            images: ['product0.png', 'product1.png', 'product2.png', 'product3.png'],
-            quantity: 1,
-            subtotal: 123,
-        },
-        {
-            id: '3',
-            imgLink: 'product4.png',
-            rate: 1.2,
-            reviews: 8,
-            category: 'SKULL D5515AI',
-            name: 'Test4 MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-            oldPrice: 499,
-            newPrice: 10000,
-            statusStock: 'out stock',
-            parameter: [
-                {
-                    option: 'CPU',
-                    value: 'N/A',
-                },
-                {
-                    option: 'Featured',
-                    value: 'N/A',
-                },
-                {
-                    option: 'I/O Ports',
-                    value: 'N/A',
-                },
-            ],
-            colors: ['green', 'red'],
-            details: [
-                'Intel Core i7-10700F',
-                'Intel H410',
-                'WHITE',
-                'NVIDIA MSI GeForce RTX 2060 SUPER 8GB AERO ITX GDDR6',
-                'SO-DIMM 16GB (16GB x 1) DDR4 2666MHz',
-                '2 total slots (64GB Max)',
-                '512GB (1 x 512GB) M.2 NVMe PCIe GEN3x4 SSD 2TB (2.5) 5400RPM',
-                'Gaming Keyboard GK30 + Gaming Mouse GM11',
-                '3.5 HDD (0/0), 2.5 HDD/SSD(1/0), M.2 (1/0)',
-                'Intel WGI219Vethernet (10/100/1000M)',
-                'AX200 (WIFI 6)+BT5.1',
-                'PSU 330W',
-                'Fan Cooler',
-            ],
-            images: ['product0.png', 'product1.png', 'product2.png', 'product3.png'],
-            quantity: 1,
-            subtotal: 123,
-        },
-        {
-            id: '4',
-            imgLink: 'product1.png',
-            rate: 2.5,
-            reviews: 63,
-            category: 'SKULL D5515AI',
-            name: 'Test5 MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-            oldPrice: 499,
-            newPrice: 632,
-            statusStock: 'in stock',
-            parameter: [
-                {
-                    option: 'CPU',
-                    value: 'N/A',
-                },
-                {
-                    option: 'Featured',
-                    value: 'N/A',
-                },
-                {
-                    option: 'I/O Ports',
-                    value: 'N/A',
-                },
-            ],
-            colors: ['red', 'violet'],
-            details: [
-                'Intel Core i7-10700F',
-                'Intel H410',
-                'WHITE',
-                'NVIDIA MSI GeForce RTX 2060 SUPER 8GB AERO ITX GDDR6',
-                'SO-DIMM 16GB (16GB x 1) DDR4 2666MHz',
-                '2 total slots (64GB Max)',
-                '512GB (1 x 512GB) M.2 NVMe PCIe GEN3x4 SSD 2TB (2.5) 5400RPM',
-                'Gaming Keyboard GK30 + Gaming Mouse GM11',
-                '3.5 HDD (0/0), 2.5 HDD/SSD(1/0), M.2 (1/0)',
-                'Intel WGI219Vethernet (10/100/1000M)',
-                'AX200 (WIFI 6)+BT5.1',
-                'PSU 330W',
-                'Fan Cooler',
-            ],
-            images: ['product0.png', 'product1.png', 'product2.png', 'product3.png'],
-            quantity: 1,
-            subtotal: 123,
-        },
-        {
-            id: '5',
-            imgLink: 'product4.png',
-            rate: 3.2,
-            reviews: 89,
-            category: 'SKU D5515AI',
-            name: 'Test6 MSI CREATOR 17 A10SFS-240AU 17 UHD 4K HDR Thin Bezel Intel 10th Gen i7 10875H - RTX 2070 SUPER MAX Q - 16GB RAM - 1TB SSD NVME - Windows 10 PRO Laptop',
-            oldPrice: 499,
-            newPrice: 125,
-            statusStock: 'out stock',
-            parameter: [
-                {
-                    option: 'CPU',
-                    value: 'N/A',
-                },
-                {
-                    option: 'Featured',
-                    value: 'N/A',
-                },
-                {
-                    option: 'I/O Ports',
-                    value: 'N/A',
-                },
-            ],
-            colors: ['black', 'red'],
-            details: [
-                'Intel Core i7-10700F',
-                'Intel H410',
-                'WHITE',
-                'NVIDIA MSI GeForce RTX 2060 SUPER 8GB AERO ITX GDDR6',
-                'SO-DIMM 16GB (16GB x 1) DDR4 2666MHz',
-                '2 total slots (64GB Max)',
-                '512GB (1 x 512GB) M.2 NVMe PCIe GEN3x4 SSD 2TB (2.5) 5400RPM',
-                'Gaming Keyboard GK30 + Gaming Mouse GM11',
-                '3.5 HDD (0/0), 2.5 HDD/SSD(1/0), M.2 (1/0)',
-                'Intel WGI219Vethernet (10/100/1000M)',
-                'AX200 (WIFI 6)+BT5.1',
-                'PSU 330W',
-                'Fan Cooler',
-            ],
-            images: ['product0.png', 'product1.png', 'product2.png', 'product3.png'],
-            quantity: 1,
-            subtotal: 123,
-        },
-    ];
-
-    // productList: Array<IProduct> = [];
-    cartInfo = new Set();
-
     pageSize = PAGE_SIZE_DEFAULT;
     infoPaging: IPagingItem = {
         start: 0,
@@ -316,32 +53,34 @@ class ProductStore extends VuexModule {
         currentPage: PAGE_SIZE_DEFAULT,
     };
 
-    get getPageSize() {
-        return this.pageSize;
-    }
+    cartInfo = new Set();
 
-    get getInfoPaging() {
-        return this.infoPaging;
-    }
-
-    get getProductListPaging() {
-        return this.productListPaging;
-    }
-
-    get getProductListFilter() {
-        return this.productListFilter;
+    get getInputSearch() {
+        return this.inputSearchHeader;
     }
 
     get getProductList() {
         return this.productList;
     }
 
-    get getCartInfo() {
-        return this.cartInfo;
+    get getProductListFilter() {
+        return this.productListFilter;
     }
 
-    get getInputSearch() {
-        return this.inputSearchHeader;
+    get getProductListPaging() {
+        return this.productListPaging;
+    }
+
+    get geFilterOptions() {
+        return this.filterOptions;
+    }
+
+    get getPageSize() {
+        return this.pageSize;
+    }
+
+    get getInfoPaging() {
+        return this.infoPaging;
     }
 
     get getFilterChosenList() {
@@ -356,6 +95,15 @@ class ProductStore extends VuexModule {
         return this.numberFilter;
     }
 
+    get getCartInfo() {
+        return this.cartInfo;
+    }
+
+    @Mutation
+    CHANGE_INPUT_SEARCH(input: string) {
+        this.inputSearchHeader = input;
+    }
+
     @Mutation
     UPDATE_PRODUCTS(data: Array<IProduct>) {
         this.productList = data;
@@ -363,9 +111,38 @@ class ProductStore extends VuexModule {
     }
 
     @Mutation
+    UPDATE_PRODUCT_LIST_PAGING(products: Array<IProduct>) {
+        this.productListPaging = products;
+    }
+
+    @Mutation
+    UPDATE_PRODUCT_LIST_FILTER(products: Array<IProduct>) {
+        this.productListFilter = products;
+    }
+
+    @Mutation
+    UPDATE_FILTER_OPTIONS(filterOptions: IFilterOptions) {
+        this.filterOptions = filterOptions;
+    }
+
+    @Mutation
+    UPDATE_FILTER_TAG_NAME_LIST(tags: Array<ITextItem>) {
+        this.filterTagNameList = tags;
+    }
+
+    @Mutation
+    UPDATE_FILTER_CHOSEN_LIST(filters: IFilterChosenList) {
+        this.filterChosenList = filters;
+    }
+
+    @Mutation
+    CHANGE_NUMBER_FILTER(number: number) {
+        this.numberFilter += number;
+    }
+
+    @Mutation
     UPDATE_INFO_PAGING(info: IPagingItem) {
         this.infoPaging = info;
-        console.log('update paging ');
     }
 
     @Mutation
@@ -394,62 +171,40 @@ class ProductStore extends VuexModule {
         this.cartInfo.clear();
     }
 
-    @Mutation
-    CHANGE_INPUT_SEARCH(input: string) {
-        this.inputSearchHeader = input;
-    }
-
-    @Mutation
-    UPDATE_PRODUCT_LIST_PAGING(products: Array<IProduct>) {
-        this.productListPaging = products;
-    }
-
-    @Mutation
-    UPDATE_PRODUCT_LIST_FILTER(products: Array<IProduct>) {
-        this.productListFilter = products;
-    }
-
-    @Mutation
-    UPDATE_FILTER_TAG_NAME_LIST(tags: Array<ITextItem>) {
-        this.filterTagNameList = tags;
-    }
-
-    @Mutation
-    UPDATE_FILTER_CHOSEN_LIST(filters: IFilterChosenList) {
-        this.filterChosenList = filters;
-    }
-
-    @Mutation
-    CHANGE_NUMBER_FILTER(number: number) {
-        this.numberFilter += number;
+    @Action
+    searchProduct(inputSearch: string) {
+        this.CHANGE_INPUT_SEARCH(inputSearch);
+        const productListFilter: Array<IProduct> = [];
+        this.productList.forEach((element) => {
+            if (element.name.toLowerCase().indexOf(inputSearch.toLowerCase()) >= 0) {
+                productListFilter.push(element);
+            }
+        });
+        this.UPDATE_PRODUCT_LIST_FILTER(productListFilter);
+        this.changePage(CURRENT_PAGE_DEFAULT);
     }
 
     @Action
     async getProducts() {
         const result: IGetProducts = await exampleService.getProducts();
         this.UPDATE_PRODUCTS(result.products);
+        this.UPDATE_FILTER_OPTIONS(result.filterOptions);
         this.UPDATE_PRODUCT_LIST_FILTER(result.products);
         this.changePage(CURRENT_PAGE_DEFAULT);
     }
 
     @Action
-    addToCart(cartItem: ICartItem) {
-        this.ADD_TO_CART(cartItem);
-    }
-
-    @Action
-    clearCart() {
-        this.CLEAR_CART();
-    }
-
-    @Action
-    deleteCart(id: string) {
-        this.DELETE_CART(id);
-    }
-
-    @Action
     updateProductListFilter(products: Array<IProduct>) {
         this.UPDATE_PRODUCT_LIST_FILTER(products);
+    }
+
+    @Action
+    updateProductListPaging(payload: { start: number; end: number }) {
+        const productListPaging = this.productListFilter.slice(
+            payload.start,
+            payload.end,
+        );
+        this.UPDATE_PRODUCT_LIST_PAGING(productListPaging);
     }
 
     @Action
@@ -514,19 +269,6 @@ class ProductStore extends VuexModule {
     }
 
     @Action
-    searchProduct(inputSearch: string) {
-        this.CHANGE_INPUT_SEARCH(inputSearch);
-        const productListFilter: Array<IProduct> = [];
-        this.productList.forEach((element) => {
-            if (element.name.toLowerCase().indexOf(inputSearch.toLowerCase()) >= 0) {
-                productListFilter.push(element);
-            }
-        });
-        this.UPDATE_PRODUCT_LIST_FILTER(productListFilter);
-        this.changePage(CURRENT_PAGE_DEFAULT);
-    }
-
-    @Action
     updatePageSize(pageSize: number) {
         this.UPDATE_PAGESIZE(pageSize);
         this.changePage(CURRENT_PAGE_DEFAULT);
@@ -553,12 +295,18 @@ class ProductStore extends VuexModule {
     }
 
     @Action
-    updateProductListPaging(payload: { start: number; end: number }) {
-        const productListPaging = this.productListFilter.slice(
-            payload.start,
-            payload.end,
-        );
-        this.UPDATE_PRODUCT_LIST_PAGING(productListPaging);
+    addToCart(cartItem: ICartItem) {
+        this.ADD_TO_CART(cartItem);
+    }
+
+    @Action
+    clearCart() {
+        this.CLEAR_CART();
+    }
+
+    @Action
+    deleteCart(id: string) {
+        this.DELETE_CART(id);
     }
 }
 

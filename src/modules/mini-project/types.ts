@@ -41,6 +41,17 @@ export interface IPagingItem {
     currentPage: number;
 }
 
+export interface IFilterOptions {
+    categoryFilters: Array<ITextItem>;
+    colorFilters: Array<ITextItem>;
+    priceFilters: Array<{
+        name: string;
+        number: number;
+        minPrice: number;
+        maxPrice: number | string;
+    }>;
+}
 export interface IGetProducts {
     products: Array<IProduct>;
+    filterOptions: IFilterOptions;
 }
