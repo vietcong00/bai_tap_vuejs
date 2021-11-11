@@ -25,9 +25,9 @@
             <el-rate v-model="product.rate" disabled />
             <p class="review-text">Reviews ({{ product.reviews }})</p>
         </div>
-        <div class="product-name">
+        <p class="product-name">
             {{ product.name }}
-        </div>
+        </p>
         <div class="product-price">
             <div class="new-price">
                 {{ formatCurrency(product.newPrice) }}
@@ -110,9 +110,15 @@ export default class ProductCartCatalogGrid extends Vue {
     }
 
     .product-name {
-        height: 30%;
         margin-top: 12px;
         font-weight: 600;
+        display: inline-block;
+        word-wrap: break-word;
+        overflow: hidden;
+        display: -webkit-box;
+        text-overflow: ellipsis;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
     }
     .product-price {
         display: flex;
